@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">EdgeDetection</string>
+    <string name="camera_grant">Grant camera permission!</string>
+    <string name="press_again_logout">Press back again.</string>
+    <string name="crop">Crop</string>
+    <string name="save">Save</string>
+    <string name="export">Export</string>
+    <string name="delete">Delete</string>
+    <string name="enhance">Enhance</string>
+    <string name="black">Black_White</string>
+    <string name="reset">Reset</string>
+    <string name="scan">Scanning</string>
+
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+</resources>
