@@ -20,10 +20,10 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
             if (resultCode == Activity.RESULT_OK) {
                 if (null != data && null != data.extras) {
                     val filePath = data.extras!!.getString(SCANNED_RESULT)
-                    result?.success(filePath)
+                    finishWithSuccess(filePath)
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                result?.success(null)
+                    finishWithSuccess(null)
             }
         }
 
@@ -57,6 +57,11 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
 
     private fun finishWithError(errorCode: String, errorMessage: String) {
         result?.error(errorCode, errorMessage, null)
+        clearMethodCallAndResult()
+    }
+
+    private fun finishWithSuccess(imagePath: String?) {
+        result?.success(imagePath)
         clearMethodCallAndResult()
     }
 
