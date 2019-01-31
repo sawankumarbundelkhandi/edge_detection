@@ -6,11 +6,12 @@
 
     <application
         android:allowBackup="true"
-        android:supportsRtl="true"
-        android:launchMode="singleTask"
+        android:supportsRtl="true"        
         android:theme="@style/AppTheme">
-        <activity android:name=".scan.ScanActivity"
-            android:label="@string/scan" >
+        <activity 
+            android:name=".scan.ScanActivity"
+            android:label="@string/scan"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".crop.CropActivity"
