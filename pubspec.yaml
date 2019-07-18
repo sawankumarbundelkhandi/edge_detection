@@ -1,8 +1,8 @@
 name: edge_detection
 description: Plugin to detect edges of objects
 version: 0.0.1
-author:
-homepage:
+author: Sawan Kumar Bundelkhandi <sawankumarbundelkhandi@gmail.com>
+homepage: https://github.com/sawankumarbundelkhandi/edge_detection
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"

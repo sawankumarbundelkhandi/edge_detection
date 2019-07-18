@@ -2,6 +2,29 @@
 
 Plugin to detect edges of objects
 
+## Usage:
+
+### Add dependency：
+Please check the latest version before installation.
+```
+dependencies:
+  flutter:
+    sdk: flutter
+  edge_detection: ^0.0.1
+```
+
+### Add the following imports to your Dart code:
+```
+import 'package:edge_detection/edge_detection.dart';
+```
+
+```dart
+
+//Make sure to await the call to detectEdge.
+String imagePath = await EdgeDetection.detectEdge;
+
+```
+
 ## Getting Started
 
 Run the example app from the repository. It's a sample app which uses the edge_detection plugin.
