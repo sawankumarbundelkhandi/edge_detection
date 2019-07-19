@@ -25,9 +25,11 @@ String imagePath = await EdgeDetection.detectEdge;
 
 ```
 
-## Getting Started
+## Demo
 
-Run the example app from the repository. It's a sample app which uses the edge_detection plugin.
+<p align="center">
+  <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
+</p>
 
 ## Screenshots 
 
@@ -78,8 +80,3 @@ Using these native implementation
 <a>https://github.com/WeTransfer/WeScan</a>
 
 <a>https://github.com/KePeng1019/SmartPaperScan</a>
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-
-For help on editing plugin code, view the [documentation](https://flutter.io/developing-packages/#edit-plugin-package).
