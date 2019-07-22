@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'edge_detection'
-  s.version          = '0.0.1'
+  s.version          = '1.0.1'
   s.summary          = 'Plugin to detect edges of objects'
   s.description      = <<-DESC
 Plugin to detect edges of objects

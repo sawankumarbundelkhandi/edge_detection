@@ -10,7 +10,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^0.0.1
+  edge_detection: ^1.0.1
 ```
 
 ### Add the following imports to your Dart code:
