@@ -29,9 +29,6 @@ class EdgeDetectionPlugin(private val registrar: Registrar, private val delegate
     }
     else if (call.method.equals("edge_detect")) {
       delegate.OpenCameraActivity(call, result)
-    }
-    else if (call.method.equals("getPlatformVersion")) {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
     }else {
       result.notImplemented()
     }
