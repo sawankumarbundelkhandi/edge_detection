@@ -9,3 +9,11 @@
 ## 1.0.2
 
 * Removed unused code.
+
+## 1.0.3
+
+* Updated to Android X (Thanks to @BugsBunnyBR for the PR)
+
+## 1.0.4
+
+* Corrected images path for pub.dev readme page.

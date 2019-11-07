@@ -10,7 +10,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.0.2
+  edge_detection: ^1.0.4
 ```
 
 ### Add the following imports to your Dart code:
@@ -28,7 +28,7 @@ String imagePath = await EdgeDetection.detectEdge;
 ## Demo
 
 <p align="center">
-  <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
+  <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
 </p>
 
 ## Screenshots 
@@ -39,16 +39,16 @@ String imagePath = await EdgeDetection.detectEdge;
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/android/1.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/1.png" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/android/2.png" width="200" />
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/2.png" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/android/3.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/3.png" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/android/4.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/4.png" width="200"/>
          </td>
       </tr>
    </table>
@@ -61,16 +61,16 @@ String imagePath = await EdgeDetection.detectEdge;
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/ios/1.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/1.PNG" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/ios/2.PNG" width="200" />
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/2.PNG" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/ios/3.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/3.PNG" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://github.com/sawankumarbundelkhandi/edge_detection/blob/master/screenshots/ios/4.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/4.PNG" width="200"/>
          </td>
       </tr>
    </table>
