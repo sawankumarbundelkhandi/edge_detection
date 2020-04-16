@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         scanner.dismiss(animated: true)
         
 
-        var imagePath = saveImage(image:results.scannedImage)
+        let imagePath = saveImage(image:results.scannedImage)
      _result!(imagePath)
        self.dismiss(animated: true)   
     }
@@ -41,13 +41,13 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
     
 
     func saveImage(image: UIImage) -> String? {
-        guard let data = UIImageJPEGRepresentation(image, 1) ?? UIImagePNGRepresentation(image) else {
+        guard let data = image.jpegData(compressionQuality: 1) ?? image.pngData() else {
             return nil
         }
         guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
             return nil
         }
-        var fileName = randomString(length:10);
+        let fileName = randomString(length:10);
         let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
         
 
