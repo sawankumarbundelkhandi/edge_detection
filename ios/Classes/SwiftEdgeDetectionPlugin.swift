@@ -6,7 +6,6 @@ public class SwiftEdgeDetectionPlugin: NSObject, FlutterPlugin, UIApplicationDel
   
     
   public static func register(with registrar: FlutterPluginRegistrar) {
-    
     let channel = FlutterMethodChannel(name: "edge_detection", binaryMessenger: registrar.messenger())
     let instance = SwiftEdgeDetectionPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
@@ -14,7 +13,6 @@ public class SwiftEdgeDetectionPlugin: NSObject, FlutterPlugin, UIApplicationDel
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    
     if let viewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController {
         let destinationViewController = HomeViewController()
         destinationViewController._result = result
