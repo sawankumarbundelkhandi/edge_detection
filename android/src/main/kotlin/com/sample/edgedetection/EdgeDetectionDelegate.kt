@@ -25,9 +25,10 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
             } else if (resultCode == Activity.RESULT_CANCELED) {
                     finishWithSuccess(null)
             }
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     fun OpenCameraActivity(call: MethodCall, result: MethodChannel.Result) {
