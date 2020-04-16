@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         scanner.dismiss(animated: true)
         
 
-        let imagePath = saveImage(image:results.scannedImage)
+        let imagePath = saveImage(image:results.croppedScan.image)
      _result!(imagePath)
        self.dismiss(animated: true)   
     }
