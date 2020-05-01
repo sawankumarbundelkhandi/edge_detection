@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'edge_detection'
-  s.version          = '1.0.4'
+  s.version          = '1.0.5'
   s.summary          = 'Plugin to detect edges of objects'
   s.description      = <<-DESC
 Plugin to detect edges of objects
@@ -17,7 +17,6 @@ Plugin to detect edges of objects
   s.dependency 'Flutter'
   s.dependency 'WeScan'
   s.swift_version = '4.2'
-
   s.ios.deployment_target = '10.0'
 end
 
