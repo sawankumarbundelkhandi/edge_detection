@@ -9,11 +9,14 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
-import android.media.MediaActionSound
-import android.os.Build
+import android.hardware.Camera.ShutterCallback
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
 import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.crop.CropActivity
@@ -44,11 +47,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private val executor: ExecutorService
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
-
+    private var soundSilence :MediaPlayer = MediaPlayer()
     init {
         mSurfaceHolder.addCallback(this)
         executor = Executors.newSingleThreadExecutor()
         proxySchedule = Schedulers.from(executor)
+        soundSilence = MediaPlayer.create(this.context, R.raw.silence);
     }
 
     fun start() {
@@ -64,8 +68,11 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         Log.i(TAG, "try to focus")
         mCamera?.autoFocus { b, _ ->
             Log.i(TAG, "focus result: " + b)
-            mCamera?.takePicture(null, null, this)
-            MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
+            mCamera?.takePicture(ShutterCallback {
+                soundSilence.start()
+            }, null, this)
+            mCamera?.enableShutterSound(false)
+            //MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
         }
     }
 
@@ -99,11 +106,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
         val display = iView.getDisplay()
         val point = Point()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            display.getRealSize(point)
-        }else{
-            display.getSize(point)
-        }
+        display.getRealSize(point)
         val displayWidth = minOf(point.x, point.y)
         val displayHeight = maxOf(point.x, point.y)
         val displayRatio = displayWidth.div(displayHeight.toFloat())
@@ -128,7 +131,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
@@ -173,7 +176,6 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                     SourceManager.corners = processPicture(pic)
                     Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
                     SourceManager.pic = pic
-
                     (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java),REQUEST_CODE)
                     busy = false
                 }
@@ -193,10 +195,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
                     val height = parameters?.previewSize?.height
-                    val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 1080, height
-                            ?: 1920, null)
+                    val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 320, height
+                            ?: 480, null)
                     val out = ByteArrayOutputStream()
-                    yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
+                    yuv.compressToJpeg(Rect(0, 0, width ?: 320, height ?: 480), 100, out)
                     val bytes = out.toByteArray()
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
@@ -213,7 +215,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                     Observable.create<Corners> {
                         val corner = processPicture(img)
                         busy = false
-                        if (null != corner) {
+                        if (null != corner && corner.corners.size == 4) {
                             it.onNext(corner)
                         } else {
                             it.onError(Throwable("paper not detected"))

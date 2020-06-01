@@ -23,7 +23,7 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
                     finishWithSuccess(filePath)
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                    finishWithSuccess(null)
+                finishWithSuccess(null)
             }
             return true;
         }

@@ -5,11 +5,13 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
-import org.opencv.core.Point
 import android.view.View
 import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.processor.Corners
+import com.sample.edgedetection.processor.TAG
+import org.opencv.core.Point
 import org.opencv.core.Size
 
 
@@ -56,6 +58,9 @@ class PaperRectangle : View {
         tr = corners.corners[1] ?: Point()
         br = corners.corners[2] ?: Point()
         bl = corners.corners[3] ?: Point()
+
+        Log.i(TAG, "POINTS ------>  ${tl.toString()} corners")
+
         resize()
         path.reset()
         path.moveTo(tl.x.toFloat(), tl.y.toFloat())
@@ -82,9 +87,8 @@ class PaperRectangle : View {
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
         val statusBarHeight = getStatusBarHeight(context)
-        val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
-        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight) ?: 1.0
+        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight) ?: 1.0
         resize()
         movePoints()
     }

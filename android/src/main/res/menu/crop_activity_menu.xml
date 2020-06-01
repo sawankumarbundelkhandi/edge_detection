@@ -1,7 +1,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-<item
-    android:id="@+id/action_label"
-    android:title="@string/next"
-    app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_label"
+        android:title="@string/crop"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_crop"/>
+
+    <item
+        android:id="@+id/rotation_image"
+        android:title="@string/rotate"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_rotate"/>
+
+<!--    <item-->
+<!--        android:id="@+id/gray"-->
+<!--        android:title="@string/black"-->
+<!--        android:icon="@drawable/ic_invert_colors"/>-->
+<!--    <item android:id="@+id/reset"-->
+<!--        android:title="@string/reset"-->
+<!--        android:icon="@drawable/ic_reset_colors"/>-->
+
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/enhance_group">
+        <item
+            android:id="@+id/gray"
+            android:title="@string/black"
+            android:icon="@drawable/ic_done"/>
+        <item android:id="@+id/reset"
+            android:title="@string/reset"
+            android:icon="@drawable/ic_reset_colors"/>
+    </group>
 </menu>

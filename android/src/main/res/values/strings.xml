@@ -7,7 +7,8 @@
     <string name="export">Export</string>
     <string name="delete">Delete</string>
     <string name="enhance">Enhance</string>
-    <string name="black">Black_White</string>
+    <string name="black">Black White</string>
+    <string name="rotate">Rotate</string>
     <string name="reset">Reset</string>
     <string name="scan">Scanning</string>
 
