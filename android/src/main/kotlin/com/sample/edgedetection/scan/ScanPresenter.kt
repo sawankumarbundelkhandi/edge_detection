@@ -35,6 +35,13 @@ import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.params.StreamConfigurationMap
+import android.util.Size as SizeB
+import android.view.Display
+import kotlin.math.max
+import kotlin.math.min
+
 
 class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy)
     : SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
@@ -84,6 +91,24 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.startPreview()
     }
 
+        
+        
+
+    val cameraManager =context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    fun getCameraCharacteristics(id: String): CameraCharacteristics? {
+        return cameraManager?.getCameraCharacteristics(id)
+    }
+    fun getBackFacingCameraId(): String? {
+        for (camID in cameraManager!!.cameraIdList) {
+            val lensFacing = getCameraCharacteristics(camID)?.get(CameraCharacteristics.LENS_FACING)!!
+            if (lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
+                mCameraLensFacing = camID
+                break
+            }
+        }
+        return mCameraLensFacing
+    }
+        
     fun initCamera() {
         try {
             mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
@@ -93,9 +118,15 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             return
         }
 
+        val cameraCharacteristics =    cameraManager.getCameraCharacteristics(getBackFacingCameraId())
 
         val param = mCamera?.parameters
-        val size = getMaxResolution()
+        
+        val size = getPreviewOutputSize(
+                iView.getDisplay(), cameraCharacteristics, SurfaceHolder::class.java)
+        // val size = getMaxResolution()
+        Log.d(TAG, "Selected preview size: ${size.width}${size.height}")
+
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
         val display = iView.getDisplay()
         val point = Point()
@@ -232,4 +263,68 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private fun getMaxResolution(): Camera.Size? = mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
 
 
+    class SmartSize(width: Int, height: Int) {
+        var size = SizeB(width, height)
+        var long = max(size.width, size.height)
+        var short = min(size.width, size.height)
+        override fun toString() = "SmartSize(${long}x${short})"
+    }
+
+    /** Standard High Definition size for pictures and video */
+    val SIZE_1080P: SmartSize = SmartSize(1920, 1080)
+
+    /** Returns a [SmartSize] object for the given [Display] */
+    fun getDisplaySmartSize(display: Display): SmartSize {
+        val outPoint = Point()
+        display.getRealSize(outPoint)
+        return SmartSize(outPoint.x, outPoint.y)
+    }
+
+    /**
+     * Returns the largest available PREVIEW size. For more information, see:
+     * https://d.android.com/reference/android/hardware/camera2/CameraDevice and
+     * https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap
+     */
+    fun <T>getPreviewOutputSize(
+            display: Display,
+            characteristics: CameraCharacteristics,
+            targetClass: Class<T>,
+            format: Int? = null
+    ): SizeB {
+
+        // Find which is smaller: screen or 1080p
+        val screenSize = getDisplaySmartSize(display)
+        val hdScreen = screenSize.long >= SIZE_1080P.long || screenSize.short >= SIZE_1080P.short
+        val maxSize = if (hdScreen) SIZE_1080P else screenSize
+
+        // If image format is provided, use it to determine supported sizes; else use target class
+        val config = characteristics.get(
+                CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
+        if (format == null)
+            assert(StreamConfigurationMap.isOutputSupportedFor(targetClass))
+        else
+            assert(config.isOutputSupportedFor(format))
+        val allSizes = if (format == null)
+            config.getOutputSizes(targetClass) else config.getOutputSizes(format)
+
+        // Get available sizes and sort them by area from largest to smallest
+        val validSizes = allSizes
+                .sortedWith(compareBy { it.height * it.width })
+                .map { SmartSize(it.width, it.height) }.reversed()
+
+        // Then, get the largest output size that is smaller or equal than our max size
+        return validSizes.first { it.long <= maxSize.long && it.short <= maxSize.short }.size
+    }
+    private fun getOptimalResolution(): Camera.Size?{
+
+
+        val resolutions = mCamera?.parameters?.supportedPreviewSizes
+        if(resolutions!=null){
+            for (item in resolutions) {
+                println("${item.width}, ${item.height}")
+            }
+        }
+        return null
+        
+    }
 }
