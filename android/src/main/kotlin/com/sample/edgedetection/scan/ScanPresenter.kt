@@ -136,7 +136,16 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         param?.flashMode = Camera.Parameters.FLASH_MODE_AUTO
 
-        mCamera?.parameters = param
+        try{ 
+            mCamera?.parameters = param 
+        }catch(e:RuntimeException)
+        { 
+            try
+            { 
+                mCamera?.parameters?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            }catch(e:RuntimeException)
+            { } 
+        }
         mCamera?.setDisplayOrientation(90)
     }
 
