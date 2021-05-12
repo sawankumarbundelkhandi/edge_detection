@@ -195,9 +195,11 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         Log.i(TAG, "on process start")
         busy = true
+        try {
         Observable.just(p0)
                 .observeOn(proxySchedule)
-                .subscribe {
+                .doOnError {}
+                .subscribe ({
                     Log.i(TAG, "start prepare paper")
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
@@ -234,11 +236,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                             }, {
                                 iView.getPaperRect().onCornersNotDetected()
                             })
-                }
+                }, { throwable -> Log.e(TAG, throwable.message!!)})
+        } catch (e:Exception) {
+            print(e.message)
+        }
 
     }
 
     private fun getMaxResolution(): Camera.Size? = mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
-
-
 }
