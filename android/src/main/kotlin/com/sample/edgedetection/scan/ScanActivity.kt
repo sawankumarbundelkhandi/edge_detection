@@ -83,6 +83,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
     override fun getPaperRect(): PaperRectangle = paper_rect
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
