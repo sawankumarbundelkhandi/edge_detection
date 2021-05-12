@@ -13,13 +13,13 @@ class EdgeDetectionPlugin(private val registrar: Registrar, private val delegate
     @JvmStatic
     fun registerWith(registrar: Registrar): Unit {
       if (registrar.activity() != null) {
-      val channel = MethodChannel(registrar.messenger(), "edge_detection")
+        val channel = MethodChannel(registrar.messenger(), "edge_detection")
 
-      val delegate = EdgeDetectionDelegate(registrar.activity())
+        val delegate = EdgeDetectionDelegate(registrar.activity())
 
-      registrar.addActivityResultListener(delegate)
+        registrar.addActivityResultListener(delegate)
 
-      channel.setMethodCallHandler(EdgeDetectionPlugin(registrar, delegate))
+        channel.setMethodCallHandler(EdgeDetectionPlugin(registrar, delegate))
       }
     }
   }

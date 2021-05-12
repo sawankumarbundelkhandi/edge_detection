@@ -24,7 +24,13 @@ import java.io.File
 import java.io.FileOutputStream
 import android.provider.MediaStore
 import android.content.ContentValues
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.hardware.Camera.open
+import android.system.Os.open
 import androidx.core.app.ActivityCompat
+import kotlinx.android.synthetic.main.activity_crop.view.*
+import java.io.IOException
 
 
 const val IMAGES_DIR = "smart_scanner"
@@ -36,6 +42,9 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
     private var croppedPicture: Mat? = null
     private var enhancedPicture: Bitmap? = null
     private var croppedBitmap: Bitmap? = null
+    private var rotateBitmap: Bitmap? = null
+    private var rotateBitmapDegree: Int = -90
+    private var rotateBitmapCurrentDegree: Int = 0
 
     init {
         iCropView.getPaperRect().onCorners2Crop(corners, picture?.size())
@@ -89,15 +98,70 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
             return
         }
 
+        var imgToEnhace:Bitmap?
+        if (enhancedPicture != null){
+            imgToEnhace = enhancedPicture
+        }else if(rotateBitmap != null){
+            imgToEnhace = rotateBitmap
+        }else{
+            imgToEnhace = croppedBitmap
+        }
+
         Observable.create<Bitmap> {
-            it.onNext(enhancePicture(croppedBitmap))
+            it.onNext(enhancePicture(imgToEnhace))
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { pc ->
+
                     enhancedPicture = pc
+                    rotateBitmap = enhancedPicture
+
                     iCropView.getCroppedPaper().setImageBitmap(pc)
                 }
+    }
+
+    fun reset(){
+        if (croppedBitmap == null) {
+            Log.i(TAG, "picture null?")
+            return
+        }
+
+        //croppedBitmap = croppedBitmap?.rotateInt(rotateBitmapDegree)
+
+        rotateBitmap = croppedBitmap
+        enhancedPicture = croppedBitmap
+
+        iCropView.getCroppedPaper().setImageBitmap(croppedBitmap);
+    }
+
+    fun rotate() {
+        if (croppedBitmap == null && enhancedPicture == null) {
+            Log.i(TAG, "picture null?")
+            return
+        }
+
+        if(enhancedPicture != null && rotateBitmap == null){
+            Log.i(TAG, "enhancedPicture ***** TRUE")
+            rotateBitmap = enhancedPicture;
+        }
+
+        if(rotateBitmap == null){
+            Log.i(TAG, "rotateBitmap ***** TRUE")
+            rotateBitmap = croppedBitmap;
+        }
+
+
+        Log.i(TAG, "ROTATEBITMAPDEGREE --> $rotateBitmapDegree")
+
+        rotateBitmap = rotateBitmap?.rotateInt(rotateBitmapDegree)
+
+        //rotateBitmap = rotateBitmap?.rotateFloat(rotateBitmapDegree.toFloat())
+
+        iCropView.getCroppedPaper().setImageBitmap(rotateBitmap)
+
+        enhancedPicture = rotateBitmap
+        croppedBitmap = croppedBitmap?.rotateInt(rotateBitmapDegree)
     }
 
     fun save(): String? {
@@ -109,36 +173,101 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
                 dir.mkdirs()
             }
 
-            //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
-            val pic = enhancedPicture
-            if (null != pic) {
-                val file = File(dir, "enhance_${SystemClock.currentThreadTimeMillis()}.jpeg")
+//            if(rotateBitmap != null) {
+//                if (enhancedPicture != null) {
+//                    enhancedPicture = rotateBitmap
+//                    Log.i(TAG, "enhancedPicture Changed")
+//                } else if(croppedBitmap != null){
+//                    croppedBitmap = rotateBitmap
+//                    Log.i(TAG, "rotateBitmap Changed")
+//                }
+//            }
+
+            val rotatePic = rotateBitmap
+            if (null != rotatePic) {
+                val file = File(dir, "rotate_${SystemClock.currentThreadTimeMillis()}.jpeg")
                 val outStream = FileOutputStream(file)
-                pic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                rotatePic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
                 outStream.flush()
                 outStream.close()
+                rotatePic.recycle()
+
+                Log.i(TAG, "RotateBitmap Saved")
 
                 return file.absolutePath
 
                 //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
                 //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-            } else {
-                val cropPic = croppedBitmap
-                if (null != cropPic) {
-                    val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.jpeg")
+            }else {
+
+                //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
+                val pic = enhancedPicture
+                if (null != pic) {
+                    val file = File(dir, "enhance_${SystemClock.currentThreadTimeMillis()}.jpeg")
                     val outStream = FileOutputStream(file)
-                    cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                    pic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
                     outStream.flush()
                     outStream.close()
-                    cropPic.recycle()
+
+                    Log.i(TAG, "EnhancedPicture Saved")
 
                     return file.absolutePath
 
                     //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
                     //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                } else {
+                    val cropPic = croppedBitmap
+                    if (null != cropPic) {
+                        val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.jpeg")
+                        val outStream = FileOutputStream(file)
+                        cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                        outStream.flush()
+                        outStream.close()
+                        cropPic.recycle()
+
+                        Log.i(TAG, "CroppedBitmap Saved")
+
+                        return file.absolutePath
+
+                        //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
+                        //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
         return null
+    }
+
+    fun Bitmap.rotateFloat(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
+
+    // Extension function to rotate a bitmap
+    fun Bitmap.rotateInt(degree:Int):Bitmap{
+        // Initialize a new matrix
+        val matrix = Matrix()
+
+        // Rotate the bitmap
+        matrix.postRotate(degree.toFloat())
+
+        // Resize the bitmap
+        val scaledBitmap = Bitmap.createScaledBitmap(
+                this,
+                width,
+                height,
+                true
+        )
+
+        // Create and return the rotated bitmap
+        return Bitmap.createBitmap(
+                scaledBitmap,
+                0,
+                0,
+                scaledBitmap.width,
+                scaledBitmap.height,
+                matrix,
+                true
+        )
     }
 }
