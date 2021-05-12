@@ -67,13 +67,38 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION
-                && (grantResults[permissions.indexOf(android.Manifest.permission.CAMERA)] == PackageManager.PERMISSION_GRANTED)) {
+
+        var allGranted = false;
+        var indexPermission = -1;
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.count() == 1) {
+                if (permissions.indexOf(android.Manifest.permission.CAMERA) >= 0) {
+                    indexPermission = permissions.indexOf(android.Manifest.permission.CAMERA)
+                }
+                if (permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) >= 0) {
+                    indexPermission = permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+                if (indexPermission >= 0 &&  grantResults[indexPermission] == PackageManager.PERMISSION_GRANTED) {
+                    allGranted = true;
+                }
+            }
+
+            if (grantResults.count() == 2 && (
+                            grantResults[permissions.indexOf(android.Manifest.permission.CAMERA)] == PackageManager.PERMISSION_GRANTED
+                                    && grantResults[permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)] == PackageManager.PERMISSION_GRANTED)) {
+                allGranted = true;
+            }
+        }
+
+        if  (allGranted) {
             showMessage(R.string.camera_grant)
             mPresenter.initCamera()
             mPresenter.updateCamera()
         }
+        
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
     }
 
     override fun getDisplay(): Display = windowManager.defaultDisplay
@@ -83,7 +108,6 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
     override fun getPaperRect(): PaperRectangle = paper_rect
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (null != data && null != data.extras) {
@@ -93,6 +117,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 }
             }
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

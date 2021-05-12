@@ -139,19 +139,28 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         param?.flashMode = Camera.Parameters.FLASH_MODE_AUTO
 
-        mCamera?.parameters = param
+        try{ 
+            mCamera?.parameters = param 
+        }catch(e:RuntimeException)
+        { 
+            try
+            { 
+                mCamera?.parameters?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            }catch(e:RuntimeException)
+            { } 
+        }
         mCamera?.setDisplayOrientation(90)
     }
 
-    override fun surfaceCreated(p0: SurfaceHolder?) {
+    override fun surfaceCreated(p0: SurfaceHolder) {
         initCamera()
     }
 
-    override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
         updateCamera()
     }
 
-    override fun surfaceDestroyed(p0: SurfaceHolder?) {
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
         synchronized(this) {
             mCamera?.stopPreview()
             mCamera?.setPreviewCallback(null)
@@ -188,9 +197,11 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         Log.i(TAG, "on process start")
         busy = true
+        try {
         Observable.just(p0)
                 .observeOn(proxySchedule)
-                .subscribe {
+                .doOnError {}
+                .subscribe ({
                     Log.i(TAG, "start prepare paper")
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
@@ -227,11 +238,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                             }, {
                                 iView.getPaperRect().onCornersNotDetected()
                             })
-                }
+                }, { throwable -> Log.e(TAG, throwable.message!!)})
+        } catch (e:Exception) {
+            print(e.message)
+        }
 
     }
 
     private fun getMaxResolution(): Camera.Size? = mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
-
-
 }
