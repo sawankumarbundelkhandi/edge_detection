@@ -25,13 +25,13 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finishWithSuccess(null)
             }
-            return true;
+            return true
         }
 
-        return false;
+        return false
     }
 
-    fun OpenCameraActivity(call: MethodCall, result: MethodChannel.Result) {
+    fun openCameraActivity(call: MethodCall, result: MethodChannel.Result) {
 
         if (!setPendingMethodCallAndResult(call, result)) {
             finishWithAlreadyActiveError()
@@ -39,10 +39,13 @@ class EdgeDetectionDelegate(activity: Activity) : PluginRegistry.ActivityResultL
         }
 
         var intent = Intent(Intent(activity.applicationContext, ScanActivity::class.java))
-        activity.startActivityForResult(intent,REQUEST_CODE)
+        activity.startActivityForResult(intent, REQUEST_CODE)
     }
 
-    private fun setPendingMethodCallAndResult(methodCall: MethodCall, result: MethodChannel.Result): Boolean {
+    private fun setPendingMethodCallAndResult(
+        methodCall: MethodCall,
+        result: MethodChannel.Result
+    ): Boolean {
         if (this.result != null) {
             return false
         }

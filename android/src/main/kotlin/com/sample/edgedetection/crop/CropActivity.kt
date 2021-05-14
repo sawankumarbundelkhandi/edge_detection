@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import androidx.appcompat.view.menu.MenuBuilder
 import com.sample.edgedetection.R
 import com.sample.edgedetection.SCANNED_RESULT
 import com.sample.edgedetection.base.BaseActivity
@@ -41,19 +40,18 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
         menu.setGroupVisible(R.id.enhance_group, showMenuItems)
 
-        menu.findItem(R.id.rotation_image).setVisible(showMenuItems)
+        menu.findItem(R.id.rotation_image).isVisible = showMenuItems
 
-        if(showMenuItems) {
+        if (showMenuItems) {
             menu.findItem(R.id.action_label)
-                    .setTitle(applicationContext.getString(R.string.done))
-                    .setIcon(applicationContext.getDrawable(R.drawable.ic_done))
+                .setTitle(applicationContext.getString(R.string.done)).icon = applicationContext.getDrawable(R.drawable.ic_done)
         }
 
         return super.onCreateOptionsMenu(menu)
     }
 
 
-    fun changeMenuVisibility(showMenuItems:Boolean){
+    private fun changeMenuVisibility(showMenuItems: Boolean) {
         this.showMenuItems = showMenuItems
         invalidateOptionsMenu()
     }
@@ -61,68 +59,46 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
     // handle button activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if(item.itemId == android.R.id.home){
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
 
         if (item.itemId == R.id.action_label) {
-            Log.e(TAG, item.title.toString());
-            if(item.title == applicationContext.getString(R.string.crop)){
-
-                Log.e(TAG, "Crop touched!");
-
-                /* Temp
-                Log.e(TAG, applicationContext.getString(R.string.done));
-                item.setTitle(applicationContext.getString(R.string.done))
-                item.setIcon(applicationContext.getDrawable(R.drawable.ic_done))
-                */
-
+            Log.e(TAG, item.title.toString())
+            if (item.title == applicationContext.getString(R.string.crop)) {
+                Log.e(TAG, "Crop touched!")
                 mPresenter.crop()
-                changeMenuVisibility(true);
-
+                changeMenuVisibility(true)
                 return true
             }
 
-//            if(item.title == applicationContext.getString(R.string.done)) {
-//                var path = mPresenter.save()
-//                setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
-//                System.gc()
-//                finish()
-//                return true
-//            }
-
-            if(item.title == applicationContext.getString(R.string.done)){
-
-                Log.e(TAG, "Saved touched!");
-
+            if (item.title == applicationContext.getString(R.string.done)) {
+                Log.e(TAG, "Saved touched!")
                 var path = mPresenter.save()
-
-                Log.e(TAG, "Saved touched! $path");
-
+                Log.e(TAG, "Saved touched! $path")
                 setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
                 System.gc()
                 finish()
-
                 return true
             }
         }
 
-        if(item.title == applicationContext.getString(R.string.rotate)){
-            Log.e(TAG, "Rotate touched!");
+        if (item.title == applicationContext.getString(R.string.rotate)) {
+            Log.e(TAG, "Rotate touched!")
             mPresenter.rotate()
             return true
         }
 
 
-        if(item.title == applicationContext.getString(R.string.black)){
-            Log.e(TAG, "Black White touched!");
+        if (item.title == applicationContext.getString(R.string.black)) {
+            Log.e(TAG, "Black White touched!")
             mPresenter.enhance()
             return true
         }
 
-        if(item.title == applicationContext.getString(R.string.reset)){
-            Log.e(TAG, "Reset touched!");
+        if (item.title == applicationContext.getString(R.string.reset)) {
+            Log.e(TAG, "Reset touched!")
             mPresenter.reset()
             return true
         }
