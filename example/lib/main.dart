@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:edge_detection/edge_detection.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -12,24 +14,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _imagePath = 'Unknown';
+  String _platformVersion = 'Unknown';
 
   @override
   void initState() {
     super.initState();
+    initPlatformState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String imagePath;
+    String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
     try {
-      imagePath = await EdgeDetection.detectEdge;
-      if (imagePath != null) {
-        print("$imagePath");
-      }
+      platformVersion = await EdgeDetection.detectEdge ?? 'Unknown platform version';
     } on PlatformException {
-      imagePath = 'Failed to get cropped image path.';
+      platformVersion = 'Failed to get platform version.';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _imagePath = imagePath;
+      _platformVersion = platformVersion;
     });
   }
 
@@ -47,28 +48,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app - Updated'),
+          title: const Text('Plugin example app'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: RaisedButton(
-                onPressed: initPlatformState,
-                child: Text('Scan'),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Cropped image path:'),
-            Padding(
-              padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
-              child: Text(
-                '$_imagePath\n',
-                style: TextStyle(fontSize: 10),
-              ),
-            ),
-          ],
+        body: Center(
+          child: Text('Running on: $_platformVersion\n'),
         ),
       ),
     );
