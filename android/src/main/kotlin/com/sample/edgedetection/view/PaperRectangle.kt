@@ -91,8 +91,9 @@ class PaperRectangle : View {
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
         val statusBarHeight = getStatusBarHeight(context)
+        val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
-        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight) ?: 1.0
+        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight) ?: 1.0
         resize()
         movePoints()
     }
