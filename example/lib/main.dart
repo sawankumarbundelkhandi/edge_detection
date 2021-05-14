@@ -22,11 +22,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> getImage() async {
-    String imagePath;
+    String? imagePath;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      imagePath = (await EdgeDetection.detectEdge)!;
+      imagePath = (await EdgeDetection.detectEdge);
       print("$imagePath");
     } on PlatformException {
       imagePath = 'Failed to get cropped image path.';
@@ -45,28 +45,32 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Plugin example app'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: ElevatedButton(
+                onPressed: getImage,
+                child: Text('Scan'),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('Cropped image path:'),
+            Padding(
+              padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
+              child: Text(
+                '$_imagePath\n',
+                style: TextStyle(fontSize: 10),
+              ),
+            ),
+          ],
+        ),
       ),
-      body:
-          Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Center(
-          child: ElevatedButton(
-            onPressed: getImage,
-            child: Text('Scan'),
-          ),
-        ),
-        SizedBox(height: 20),
-        Text('Cropped image path:'),
-        Padding(
-          padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
-          child: Text(
-            '$_imagePath\n',
-            style: TextStyle(fontSize: 10),
-          ),
-        ),
-      ]),
-    ));
+    );
   }
 }
