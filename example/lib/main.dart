@@ -14,23 +14,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String? _imagePath;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
+  Future<void> getImage() async {
+    String imagePath;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion = await EdgeDetection.detectEdge ?? 'Unknown platform version';
+      imagePath = (await EdgeDetection.detectEdge)!;
+      print("$imagePath");
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      imagePath = 'Failed to get cropped image path.';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -39,21 +38,35 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _imagePath = imagePath;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        home: Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
       ),
-    );
+      body:
+          Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Center(
+          child: ElevatedButton(
+            onPressed: getImage,
+            child: Text('Scan'),
+          ),
+        ),
+        SizedBox(height: 20),
+        Text('Cropped image path:'),
+        Padding(
+          padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
+          child: Text(
+            '$_imagePath\n',
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+      ]),
+    ));
   }
 }
