@@ -11,6 +11,8 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         if self.isBeingPresented {
             let scannerVC = ImageScannerController()
             scannerVC.imageScannerDelegate = self
+            scannerVC.modalPresentationStyle = .fullScreen
+            scannerVC.modalTransitionStyle = .crossDissolve
             present(scannerVC, animated: true, completion: nil)
         }  
     }    
