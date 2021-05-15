@@ -11,6 +11,7 @@ import android.graphics.YuvImage
 import android.hardware.Camera
 import android.hardware.Camera.ShutterCallback
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
