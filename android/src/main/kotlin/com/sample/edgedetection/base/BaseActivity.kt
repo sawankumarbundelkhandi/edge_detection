@@ -17,7 +17,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun showMessage(id: Int) {
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show()
     }
 
     abstract fun provideContentViewId(): Int

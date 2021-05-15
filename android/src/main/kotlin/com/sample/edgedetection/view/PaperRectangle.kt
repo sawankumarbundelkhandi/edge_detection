@@ -18,7 +18,11 @@ import org.opencv.core.Size
 class PaperRectangle : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes)
-    constructor(context: Context, attributes: AttributeSet, defTheme: Int) : super(context, attributes, defTheme)
+    constructor(context: Context, attributes: AttributeSet, defTheme: Int) : super(
+        context,
+        attributes,
+        defTheme
+    )
 
     private val rectPaint = Paint()
     private val circlePaint = Paint()
@@ -35,7 +39,7 @@ class PaperRectangle : View {
     private var latestDownY = 0.0F
 
     init {
-        rectPaint.color = Color.BLUE
+        rectPaint.color = Color.WHITE
         rectPaint.isAntiAlias = true
         rectPaint.isDither = true
         rectPaint.strokeWidth = 6F
@@ -59,7 +63,7 @@ class PaperRectangle : View {
         br = corners.corners[2] ?: Point()
         bl = corners.corners[3] ?: Point()
 
-        Log.i(TAG, "POINTS ------>  ${tl.toString()} corners")
+        Log.i(TAG, "POINTS ------>  $tl corners")
 
         resize()
         path.reset()
@@ -87,8 +91,9 @@ class PaperRectangle : View {
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
         val statusBarHeight = getStatusBarHeight(context)
+        val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
-        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight) ?: 1.0
+        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight) ?: 1.0
         resize()
         movePoints()
     }

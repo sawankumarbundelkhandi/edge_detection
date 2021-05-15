@@ -5,7 +5,9 @@ A flutter plugin to detect edges of objects, scan paper, detect corner, detect r
 ## Usage:
 
 ### Add dependency：
+
 Please check the latest version before installation.
+
 ```
 dependencies:
   flutter:
@@ -14,6 +16,7 @@ dependencies:
 ```
 
 ### Add the following imports to your Dart code:
+
 ```
 import 'package:edge_detection/edge_detection.dart';
 ```
@@ -31,7 +34,7 @@ String imagePath = await EdgeDetection.detectEdge;
   <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
 </p>
 
-## Screenshots 
+## Screenshots
 
 # Android
 
@@ -53,7 +56,6 @@ String imagePath = await EdgeDetection.detectEdge;
       </tr>
    </table>
 </div>
-
 
 # iOS
 

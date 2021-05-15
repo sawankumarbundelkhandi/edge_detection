@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:edge_detection/edge_detection.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -12,22 +14,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _imagePath = 'Unknown';
+  String? _imagePath;
 
   @override
   void initState() {
     super.initState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String imagePath;
+  Future<void> getImage() async {
+    String? imagePath;
     // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
     try {
-      imagePath = await EdgeDetection.detectEdge;
-      if (imagePath != null) {
-        print("$imagePath");
-      }
+      imagePath = (await EdgeDetection.detectEdge);
+      print("$imagePath");
     } on PlatformException {
       imagePath = 'Failed to get cropped image path.';
     }
@@ -47,15 +47,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app - Updated'),
+          title: const Text('Plugin example app'),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-              child: RaisedButton(
-                onPressed: initPlatformState,
+              child: ElevatedButton(
+                onPressed: getImage,
                 child: Text('Scan'),
               ),
             ),
