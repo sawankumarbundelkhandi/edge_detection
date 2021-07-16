@@ -35,6 +35,8 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy) :
     SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
@@ -263,7 +265,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private fun distance(corners: Corners): Double {
         val tl = corners.corners[0] ?: org.opencv.core.Point()
         val bl = corners.corners[3] ?: org.opencv.core.Point()
-        
+
         val d : Double = sqrt((
             (tl.x.toFloat()-bl.x.toFloat()).pow(2) + 
             (tl.y.toFloat()-bl.y.toFloat()).pow(2)
