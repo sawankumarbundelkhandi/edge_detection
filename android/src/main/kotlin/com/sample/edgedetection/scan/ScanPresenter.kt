@@ -35,6 +35,8 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy) :
@@ -238,6 +240,11 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                         val corner = processPicture(img)
                         busy = false
                         if (null != corner && corner.corners.size == 4) {
+                            val heigth: Double = distance(corner)
+                            if (heigth < 170 ) {
+                                Log.i(TAG, "------ $heigth heigth-------------")
+                                it.onError(Throwable("to small"))
+                            }
                             it.onNext(corner)
                         } else {
                             it.onError(Throwable("paper not detected"))
@@ -255,6 +262,17 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
 
     }
+
+    private fun distance(corners: Corners): Double {
+        val tl = corners.corners[0] ?: org.opencv.core.Point()
+        val bl = corners.corners[3] ?: org.opencv.core.Point()
+        
+        val d : Double = sqrt((
+            (tl.x.toFloat()-bl.x.toFloat()).pow(2) + 
+            (tl.y.toFloat()-bl.y.toFloat()).pow(2)
+            ).toDouble())
+        return d
+     }
 
     private fun getMaxResolution(): Camera.Size? =
         mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
