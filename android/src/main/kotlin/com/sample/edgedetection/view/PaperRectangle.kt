@@ -39,7 +39,7 @@ class PaperRectangle : View {
     private var latestDownY = 0.0F
 
     init {
-        rectPaint.color = Color.WHITE
+        rectPaint.color = Color.RED
         rectPaint.isAntiAlias = true
         rectPaint.isDither = true
         rectPaint.strokeWidth = 6F
