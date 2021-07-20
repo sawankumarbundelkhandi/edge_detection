@@ -28,10 +28,10 @@ class PaperRectangle : View {
     private val circlePaint = Paint()
     private var ratioX: Double = 1.0
     private var ratioY: Double = 1.0
-    private var tl: Point = Point()
-    private var tr: Point = Point()
-    private var br: Point = Point()
-    private var bl: Point = Point()
+    private var tl: Point = org.opencv.core.Point(100.toDouble(), 20.toDouble())
+    private var tr: Point = org.opencv.core.Point(800.toDouble(), 20.toDouble())
+    private var br: Point = org.opencv.core.Point(800.toDouble(), 500.toDouble())
+    private var bl: Point = org.opencv.core.Point(100.toDouble(), 500.toDouble())
     private val path: Path = Path()
     private var point2Move = Point()
     private var cropMode = false
@@ -82,11 +82,14 @@ class PaperRectangle : View {
 
     fun onCorners2Crop(corners: Corners?, size: Size?) {
 
+        val margin = 200.0
         cropMode = true
-        tl = corners?.corners?.get(0) ?: SourceManager.defaultTl
-        tr = corners?.corners?.get(1) ?: SourceManager.defaultTr
-        br = corners?.corners?.get(2) ?: SourceManager.defaultBr
-        bl = corners?.corners?.get(3) ?: SourceManager.defaultBl
+        val width: Double = size?.width ?: 0.0
+        val height: Double = size?.height ?: 0.0
+        tl = corners?.corners?.get(0) ?: org.opencv.core.Point(margin.toDouble(), margin.toDouble())
+        tr = corners?.corners?.get(1) ?: org.opencv.core.Point((width - margin).toDouble(), margin.toDouble())
+        br = corners?.corners?.get(2) ?: org.opencv.core.Point((width - margin).toDouble(), (height - margin).toDouble())
+        bl = corners?.corners?.get(3) ?: org.opencv.core.Point(margin.toDouble(), (height - margin).toDouble())
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
@@ -105,6 +108,14 @@ class PaperRectangle : View {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        if(!cropMode) {
+            val margin = 100
+            path.moveTo(margin.toFloat(), margin.toFloat())
+            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), margin.toFloat())
+            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
+            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
+            path.close()
+        }
         canvas?.drawPath(path, rectPaint)
         if (cropMode) {
             canvas?.drawCircle(tl.x.toFloat(), tl.y.toFloat(), 20F, circlePaint)

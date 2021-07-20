@@ -200,8 +200,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             }
     }
 
-
-    override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
+    override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {}
+    /* override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
         if (busy) {
             return
         }
@@ -260,7 +260,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             print(e.message)
         }
 
-    }
+    } */
 
     private fun distance(corners: Corners): Double {
         val tl = corners.corners[0] ?: org.opencv.core.Point()
