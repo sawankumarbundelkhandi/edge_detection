@@ -123,8 +123,8 @@ class PaperRectangle : View {
             val margin = 100
             path.moveTo(margin.toFloat(), margin.toFloat())
             path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), margin.toFloat())
-            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
-            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
+            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - 200).toFloat())
+            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - 200).toFloat())
             path.close()
         }
         canvas?.drawPath(path, rectPaint)
