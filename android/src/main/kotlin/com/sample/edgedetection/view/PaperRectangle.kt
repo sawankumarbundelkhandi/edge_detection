@@ -13,6 +13,8 @@ import com.sample.edgedetection.processor.Corners
 import com.sample.edgedetection.processor.TAG
 import org.opencv.core.Point
 import org.opencv.core.Size
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class PaperRectangle : View {
@@ -86,10 +88,19 @@ class PaperRectangle : View {
         cropMode = true
         val width: Double = size?.width ?: 0.0
         val height: Double = size?.height ?: 0.0
-        tl = corners?.corners?.get(0) ?: org.opencv.core.Point(margin.toDouble(), margin.toDouble())
-        tr = corners?.corners?.get(1) ?: org.opencv.core.Point((width - margin).toDouble(), margin.toDouble())
-        br = corners?.corners?.get(2) ?: org.opencv.core.Point((width - margin).toDouble(), (height - margin).toDouble())
-        bl = corners?.corners?.get(3) ?: org.opencv.core.Point(margin.toDouble(), (height - margin).toDouble())
+        val altura: Double = distance(corners)
+        Log.i(TAG, "DIAGONAL ------>  $altura diagonal")
+        if (altura < 700 ) {
+            tl = org.opencv.core.Point(margin.toDouble(), margin.toDouble())
+            tr = org.opencv.core.Point((width - margin).toDouble(), margin.toDouble())
+            br = org.opencv.core.Point((width - margin).toDouble(), (height - margin).toDouble())
+            bl = org.opencv.core.Point(margin.toDouble(), (height - margin).toDouble())
+        } else {
+            tl = corners?.corners?.get(0) ?: org.opencv.core.Point(margin.toDouble(), margin.toDouble())
+            tr = corners?.corners?.get(1) ?: org.opencv.core.Point((width - margin).toDouble(), margin.toDouble())
+            br = corners?.corners?.get(2) ?: org.opencv.core.Point((width - margin).toDouble(), (height - margin).toDouble())
+            bl = corners?.corners?.get(3) ?: org.opencv.core.Point(margin.toDouble(), (height - margin).toDouble())
+        }
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
@@ -199,5 +210,17 @@ class PaperRectangle : View {
         return if (resourceId > 0) {
             resources.getDimensionPixelSize(resourceId)
         } else 0
+    }
+
+    private fun distance(corners: Corners?): Double {
+        val corntl = corners?: Corners(listOf(), Size())
+        val tl = corntl.corners[0] ?: org.opencv.core.Point()
+        val br = corntl.corners[3] ?: org.opencv.core.Point()
+
+        val d : Double = sqrt((
+            (tl.x.toFloat()-br.x.toFloat()).pow(2) + 
+            (tl.y.toFloat()-br.y.toFloat()).pow(2)
+            ).toDouble())
+        return d
     }
 }
