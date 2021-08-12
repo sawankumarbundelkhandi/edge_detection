@@ -53,7 +53,7 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
         val values = ContentValues()
 
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
         values.put(MediaStore.MediaColumns.DATA, filePath)
 
         context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
