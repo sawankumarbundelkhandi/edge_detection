@@ -83,8 +83,11 @@ class PaperRectangle : View {
     }
 
     fun onCorners2Crop(corners: Corners?, size: Size?) {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val alturaScreen = displayMetrics.heightPixels ?: 1000
 
-        val margin = 100.0
+        val margin = alturaScreen * .085
         cropMode = true
         val width: Double = size?.width ?: 0.0
         val height: Double = size?.height ?: 0.0
@@ -101,9 +104,7 @@ class PaperRectangle : View {
             br = corners?.corners?.get(2) ?: org.opencv.core.Point((width - margin).toDouble(), (height - margin).toDouble())
             bl = corners?.corners?.get(3) ?: org.opencv.core.Point(margin.toDouble(), (height - margin).toDouble())
         }
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        //exclude status bar height
+
         val statusBarHeight = getStatusBarHeight(context)
         val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
@@ -120,11 +121,19 @@ class PaperRectangle : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if(!cropMode) {
-            val margin = 40
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            //exclude status bar height
+            val statusBarHeight = getStatusBarHeight(context)
+            val navigationBarHeight = getNavigationBarHeight(context)
+            val altura = displayMetrics.heightPixels ?: 1000
+            Log.i(TAG, "ALTURA2 ------>  $altura")
+            val margin = altura * .04
+            val margin2 = altura * .085
             path.moveTo(margin.toFloat(), margin.toFloat())
             path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), margin.toFloat())
-            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - 100).toFloat())
-            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - 100).toFloat())
+            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - margin2).toFloat())
+            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - margin2).toFloat())
             path.close()
         }
         canvas?.drawPath(path, rectPaint)
