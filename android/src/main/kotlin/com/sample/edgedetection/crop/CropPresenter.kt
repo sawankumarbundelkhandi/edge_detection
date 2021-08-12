@@ -179,9 +179,9 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
 
             val rotatePic = rotateBitmap
             if (null != rotatePic) {
-                val file = File(dir, "rotate_${SystemClock.currentThreadTimeMillis()}.jpeg")
+                val file = File(dir, "rotate_${SystemClock.currentThreadTimeMillis()}.png")
                 val outStream = FileOutputStream(file)
-                rotatePic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                rotatePic.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                 outStream.flush()
                 outStream.close()
                 rotatePic.recycle()
@@ -197,9 +197,9 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
                 //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
                 val pic = enhancedPicture
                 if (null != pic) {
-                    val file = File(dir, "enhance_${SystemClock.currentThreadTimeMillis()}.jpeg")
+                    val file = File(dir, "enhance_${SystemClock.currentThreadTimeMillis()}.png")
                     val outStream = FileOutputStream(file)
-                    pic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                    pic.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                     outStream.flush()
                     outStream.close()
                     pic.recycle()
@@ -213,9 +213,9 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
                 } else {
                     val cropPic = croppedBitmap
                     if (null != cropPic) {
-                        val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.jpeg")
+                        val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.png")
                         val outStream = FileOutputStream(file)
-                        cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+                        cropPic.compress(Bitmap.CompressFormat.PNG, 100, outStream)
                         outStream.flush()
                         outStream.close()
                         cropPic.recycle()

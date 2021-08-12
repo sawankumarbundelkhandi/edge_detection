@@ -2,15 +2,15 @@
     <string name="app_name">EdgeDetection</string>
     <string name="camera_grant">Grant camera permission!</string>
     <string name="press_again_logout">Press back again.</string>
-    <string name="crop">Crop</string>
-    <string name="save">Save</string>
-    <string name="export">Export</string>
-    <string name="delete">Delete</string>
+    <string name="crop">Reocortar</string>
+    <string name="save">Guardar</string>
+    <string name="export">Exportar</string>
+    <string name="delete">Borrar</string>
     <string name="enhance">Enhance</string>
     <string name="black">Black White</string>
-    <string name="rotate">Rotate</string>
+    <string name="rotate">Rotar</string>
     <string name="reset">Reset</string>
-    <string name="scan">Scanning</string>
+    <string name="scan">Foto</string>
 
     <string name="next">Next</string>
     <string name="done">Done</string>
