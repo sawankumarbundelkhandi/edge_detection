@@ -84,7 +84,7 @@ class PaperRectangle : View {
 
     fun onCorners2Crop(corners: Corners?, size: Size?) {
 
-        val margin = 200.0
+        val margin = 100.0
         cropMode = true
         val width: Double = size?.width ?: 0.0
         val height: Double = size?.height ?: 0.0
@@ -120,11 +120,11 @@ class PaperRectangle : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if(!cropMode) {
-            val margin = 100
+            val margin = 40
             path.moveTo(margin.toFloat(), margin.toFloat())
             path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), margin.toFloat())
-            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
-            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - margin).toFloat())
+            path.lineTo(((canvas?.width ?: 0) - margin).toFloat(), ((canvas?.height ?: 0) - 100).toFloat())
+            path.lineTo(margin.toFloat(), ((canvas?.height ?: 0) - 100).toFloat())
             path.close()
         }
         canvas?.drawPath(path, rectPaint)
@@ -213,14 +213,17 @@ class PaperRectangle : View {
     }
 
     private fun distance(corners: Corners?): Double {
-        val corntl = corners?: Corners(listOf(), Size())
+        val corntl = corners?: null
+        if (corntl != null) {
         val tl = corntl.corners[0] ?: org.opencv.core.Point()
         val br = corntl.corners[3] ?: org.opencv.core.Point()
 
         val d : Double = sqrt((
             (tl.x.toFloat()-br.x.toFloat()).pow(2) + 
             (tl.y.toFloat()-br.y.toFloat()).pow(2)
-            ).toDouble())
+            ).toDouble())   
         return d
+        }
+        return 0.0
     }
 }
