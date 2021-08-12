@@ -10,6 +10,7 @@ import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
 import android.hardware.Camera.ShutterCallback
+import android.os.SystemClock
 import android.media.MediaPlayer
 import android.util.Log
 import android.view.SurfaceHolder
@@ -47,12 +48,21 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
     private var soundSilence: MediaPlayer = MediaPlayer()
+    var mLastClickTime=0L
 
     init {
         mSurfaceHolder.addCallback(this)
         executor = Executors.newSingleThreadExecutor()
         proxySchedule = Schedulers.from(executor)
         soundSilence = MediaPlayer.create(this.context, R.raw.silence)
+    }
+
+    fun isOpenRecently():Boolean{
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
+            return true
+        }
+        mLastClickTime = SystemClock.elapsedRealtime()
+        return false
     }
 
     fun start() {
@@ -64,6 +74,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     }
 
     fun shut() {
+        if (isOpenRecently()) {
+            Log.i(TAG, "NOT Taking click")
+            return
+        }
         busy = true
         Log.i(TAG, "try to focus")
         mCamera?.autoFocus { b, _ ->
