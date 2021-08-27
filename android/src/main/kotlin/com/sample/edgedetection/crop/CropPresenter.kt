@@ -1,6 +1,7 @@
 package com.sample.edgedetection.crop
 
 import android.Manifest
+import android.net.Uri
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
@@ -25,6 +26,9 @@ import org.opencv.android.Utils
 import org.opencv.core.Mat
 import java.io.File
 import java.io.FileOutputStream
+import android.os.Build
+import android.media.MediaScannerConnection
+import android.media.MediaScannerConnection.OnScanCompletedListener
 
 
 const val IMAGES_DIR = "smart_scanner"
@@ -47,16 +51,43 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
         Utils.matToBitmap(picture, bitmap, true)
         iCropView.getPaper().setImageBitmap(bitmap)
     }
-
-    fun addImageToGallery(filePath: String, context: Context) {
-
+    fun addImageToGalleryOldApi(filePath: String,context: Context) {
+        if (Build.VERSION.SDK_INT > 28) {
+            return
+        }
+        Log.i("ADD IMAGE TO GELLARY ${Build.VERSION.SDK_INT}", "${filePath}")
         val values = ContentValues()
-
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        values.put(MediaStore.MediaColumns.DATA, filePath)
-
+        values.put(MediaStore.MediaColumns.DATA,filePath)
         context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    }
+    fun addImageToGallery(fileName: String, bitmap: Bitmap, context: Context) {
+        //val collection = MediaStore.Images.Media.getContentUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        if (Build.VERSION.SDK_INT < 29) {
+            return
+        }
+        val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        Log.i(TAG, "${fileName}")
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+        values.put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis())
+        values.put(MediaStore.MediaColumns.DATE_MODIFIED, System.currentTimeMillis())
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        values.put(MediaStore.MediaColumns.SIZE, bitmap.byteCount)
+        values.put(MediaStore.MediaColumns.WIDTH, bitmap.width)
+        values.put(MediaStore.MediaColumns.HEIGHT, bitmap.height)
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "${File.separator}" + "${IMAGES_DIR}")
+        values.put(MediaStore.Images.Media.IS_PENDING, 1)
+        val uri = context.contentResolver.insert(collection, values)
+        context.contentResolver.openOutputStream(uri!!, "w").use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+        Log.i(TAG, "${uri}")
+        values.clear()
+        values.put(MediaStore.Images.Media.IS_PENDING, 0)
+        // val urii = Uri.fromFile(File(fileUrl!!)!!)
+        context.contentResolver.update(uri!!, values, null, null)
     }
 
     fun crop() {
@@ -92,12 +123,12 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
             return
         }
 
-        var imgToEnhace:Bitmap?
-        if (enhancedPicture != null){
+        var imgToEnhace: Bitmap?
+        if (enhancedPicture != null) {
             imgToEnhace = enhancedPicture
-        }else if(rotateBitmap != null){
+        } else if (rotateBitmap != null) {
             imgToEnhace = rotateBitmap
-        }else{
+        } else {
             imgToEnhace = croppedBitmap
         }
 
@@ -115,7 +146,7 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
                 }
     }
 
-    fun reset(){
+    fun reset() {
         if (croppedBitmap == null) {
             Log.i(TAG, "picture null?")
             return
@@ -135,12 +166,12 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
             return
         }
 
-        if(enhancedPicture != null && rotateBitmap == null){
+        if (enhancedPicture != null && rotateBitmap == null) {
             Log.i(TAG, "enhancedPicture ***** TRUE")
             rotateBitmap = enhancedPicture;
         }
 
-        if(rotateBitmap == null){
+        if (rotateBitmap == null) {
             Log.i(TAG, "rotateBitmap ***** TRUE")
             rotateBitmap = croppedBitmap;
         }
@@ -162,7 +193,14 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "please grant write file permission and try again", Toast.LENGTH_SHORT).show()
         } else {
-            val dir = File(Environment.getExternalStorageDirectory(), IMAGES_DIR)
+            val dir: File
+            if (Build.VERSION.SDK_INT < 29) {
+              dir =  Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES);
+            } else {
+               val path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+               dir = File(path, IMAGES_DIR)
+            }
             if (!dir.exists()) {
                 dir.mkdirs()
             }
@@ -179,51 +217,48 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
 
             val rotatePic = rotateBitmap
             if (null != rotatePic) {
+                addImageToGallery("rotate_${SystemClock.currentThreadTimeMillis()}.jpeg", croppedBitmap!!, this.context)
                 val file = File(dir, "rotate_${SystemClock.currentThreadTimeMillis()}.jpeg")
                 val outStream = FileOutputStream(file)
                 rotatePic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
                 outStream.flush()
                 outStream.close()
                 rotatePic.recycle()
-
+                addImageToGalleryOldApi(file.absolutePath,context)
                 Log.i(TAG, "RotateBitmap Saved")
-
                 return file.absolutePath
-
-                //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
+                //Commented as we don't want the images in the gallery.
                 //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-            }else {
-
+            } else {
                 //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
                 val pic = enhancedPicture
+
                 if (null != pic) {
+                    addImageToGallery("enhance_${SystemClock.currentThreadTimeMillis()}.jpeg", croppedBitmap!!, this.context)
                     val file = File(dir, "enhance_${SystemClock.currentThreadTimeMillis()}.jpeg")
                     val outStream = FileOutputStream(file)
                     pic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
                     outStream.flush()
                     outStream.close()
                     pic.recycle()
-
+                    addImageToGalleryOldApi(file.absolutePath,context)
                     Log.i(TAG, "EnhancedPicture Saved")
-
                     return file.absolutePath
-
                     //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
                     //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                } else {
+                 } else {
                     val cropPic = croppedBitmap
                     if (null != cropPic) {
+                        addImageToGallery("crop_${SystemClock.currentThreadTimeMillis()}.jpeg", croppedBitmap!!, this.context)
                         val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.jpeg")
                         val outStream = FileOutputStream(file)
                         cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
                         outStream.flush()
                         outStream.close()
                         cropPic.recycle()
-
+                        addImageToGalleryOldApi(file.absolutePath,context)
                         Log.i(TAG, "CroppedBitmap Saved")
-
                         return file.absolutePath
-
                         //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
                         //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
                     }
@@ -239,7 +274,7 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
     }
 
     // Extension function to rotate a bitmap
-    fun Bitmap.rotateInt(degree:Int):Bitmap{
+    fun Bitmap.rotateInt(degree: Int): Bitmap {
         // Initialize a new matrix
         val matrix = Matrix()
 
