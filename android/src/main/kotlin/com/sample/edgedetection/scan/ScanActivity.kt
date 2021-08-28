@@ -77,7 +77,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         shut.setOnClickListener {
-            mPresenter.shut()
+           if (mPresenter.canShutt) {
+               mPresenter.shut()
+           }
         }
     }
 
@@ -128,7 +130,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         if (allGranted) {
-            showMessage(R.string.camera_grant)
+            //showMessage(R.string.camera_grant)
             mPresenter.initCamera()
             mPresenter.updateCamera()
         }
