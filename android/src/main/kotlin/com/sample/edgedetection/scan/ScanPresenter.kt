@@ -9,8 +9,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
-import android.hardware.Camera.ShutterCallback
-import android.media.MediaPlayer
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
@@ -45,13 +43,11 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private val executor: ExecutorService
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
-    private var soundSilence: MediaPlayer = MediaPlayer()
 
     init {
         mSurfaceHolder.addCallback(this)
         executor = Executors.newSingleThreadExecutor()
         proxySchedule = Schedulers.from(executor)
-        soundSilence = MediaPlayer.create(this.context, R.raw.silence)
     }
 
     fun start() {
@@ -67,11 +63,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         Log.i(TAG, "try to focus")
         mCamera?.autoFocus { b, _ ->
             Log.i(TAG, "focus result: " + b)
-            mCamera?.takePicture(ShutterCallback {
-                soundSilence.start()
-            }, null, this)
-            mCamera?.enableShutterSound(false)
-            //MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
+            mCamera?.takePicture(null, null, this)
         }
     }
 
@@ -152,7 +144,14 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.setDisplayOrientation(90)
     }
 
-    override fun surfaceCreated(p0: SurfaceHolder) {
+    fun detectEdge(pic: Mat) {
+        SourceManager.corners = processPicture(pic)
+        Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
+        SourceManager.pic = pic
+        (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java),REQUEST_CODE)
+    }
+
+    override fun surfaceCreated(p0: SurfaceHolder?) {
         initCamera()
     }
 
@@ -172,33 +171,21 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     override fun onPictureTaken(p0: ByteArray?, p1: Camera?) {
         Log.i(TAG, "on picture taken")
         Observable.just(p0)
-            .subscribeOn(proxySchedule)
-            .subscribe {
-                val pictureSize = p1?.parameters?.pictureSize
-                Log.i(TAG, "picture size: " + pictureSize.toString())
-                val mat = Mat(
-                    Size(
-                        pictureSize?.width?.toDouble() ?: 1920.toDouble(),
-                        pictureSize?.height?.toDouble() ?: 1080.toDouble()
-                    ), CvType.CV_8U
-                )
-                mat.put(0, 0, p0)
-                val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
-                Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
-                mat.release()
-                SourceManager.corners = processPicture(pic)
-                Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
-                SourceManager.pic = pic
-                (context as Activity).startActivityForResult(
-                    Intent(
-                        context,
-                        CropActivity::class.java
-                    ), REQUEST_CODE
-                )
-                busy = false
-            }
-    }
+                .subscribeOn(proxySchedule)
+                .subscribe {
+                    val pictureSize = p1?.parameters?.pictureSize
+                    Log.i(TAG, "picture size: " + pictureSize.toString())
+                    val mat = Mat(Size(pictureSize?.width?.toDouble() ?: 1920.toDouble(),
+                            pictureSize?.height?.toDouble() ?: 1080.toDouble()), CvType.CV_8U)
+                    mat.put(0, 0, p0)
+                    val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
+                    Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
+                    mat.release()
 
+                    detectEdge(pic);
+                    busy = false
+                }
+    }
 
     override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
         if (busy) {

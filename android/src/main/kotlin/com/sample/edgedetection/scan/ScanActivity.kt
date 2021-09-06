@@ -3,10 +3,15 @@ package com.sample.edgedetection.scan
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.ExifInterface
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Display
 import android.view.MenuItem
 import android.view.SurfaceView
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sample.edgedetection.R
@@ -17,11 +22,18 @@ import com.sample.edgedetection.view.PaperRectangle
 
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.OpenCVLoader
+import org.opencv.core.Core
+import org.opencv.core.CvType
+import org.opencv.core.Mat
+import org.opencv.core.Size
+import org.opencv.imgcodecs.Imgcodecs
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class ScanActivity : BaseActivity(), IScanView.Proxy {
 
     private val REQUEST_CAMERA_PERMISSION = 0
-    private val EXIT_TIME = 2000
 
     private lateinit var mPresenter: ScanPresenter
 
@@ -79,6 +91,11 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         shut.setOnClickListener {
             mPresenter.shut()
         }
+
+        gallery.setOnClickListener {
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            ActivityCompat.startActivityForResult(this, gallery, 1, null);
+        };
     }
 
 
@@ -144,6 +161,8 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
     override fun getPaperRect(): PaperRectangle = paper_rect
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (null != data && null != data.extras) {
@@ -153,7 +172,13 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val uri: Uri = data!!.data
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                onImageSelected(uri)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -164,5 +189,52 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun onImageSelected(imageUri: Uri) {
+        val iStream: InputStream = contentResolver.openInputStream(imageUri)
+
+        val exif = ExifInterface(iStream);
+        var rotation = -1
+        val orientation: Int = exif.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED)
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotation = Core.ROTATE_90_CLOCKWISE
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotation = Core.ROTATE_180
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotation = Core.ROTATE_90_COUNTERCLOCKWISE
+        }
+        Log.i(TAG, "rotation:" + rotation)
+
+        var imageWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 0).toDouble()
+        var imageHeight = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 0).toDouble()
+        if (rotation == Core.ROTATE_90_CLOCKWISE || rotation == Core.ROTATE_90_COUNTERCLOCKWISE) {
+            imageWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 0).toDouble()
+            imageHeight = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 0).toDouble()
+        }
+        Log.i(TAG, "width:" + imageWidth)
+        Log.i(TAG, "height:" + imageHeight)
+
+        val inputData: ByteArray? = getBytes(contentResolver.openInputStream(imageUri))
+        val mat = Mat(Size(imageWidth, imageHeight), CvType.CV_8U)
+        mat.put(0, 0, inputData)
+        val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
+        if (rotation > -1) Core.rotate(pic, pic, rotation)
+        mat.release()
+
+        mPresenter.detectEdge(pic);
+    }
+
+    @Throws(IOException::class)
+    fun getBytes(inputStream: InputStream): ByteArray? {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
     }
 }

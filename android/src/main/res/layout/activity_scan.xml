@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,12 +25,25 @@
 
         <ImageView
             android:id="@+id/shut"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_centerInParent="true"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="@drawable/round_button"
+            android:padding="8dp"
+            android:src="@drawable/ic_menu_camera"
+            android:tint="@android:color/darker_gray" />
+
+        <ImageView
+            android:id="@+id/gallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/round_button"
             android:contentDescription="TODO"
-            android:src="@drawable/ic_camera_white" />
+            android:padding="8dp"
+            android:tint="@android:color/darker_gray"
+            app:srcCompat="@drawable/ic_menu_gallery" />
     </RelativeLayout>
 
 </RelativeLayout>

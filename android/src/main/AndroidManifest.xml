@@ -13,13 +13,16 @@
             android:name=".scan.ScanActivity"
             android:screenOrientation="portrait"
             android:label="@string/scan"
-            android:launchMode="singleTask" >
-        </activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".crop.CropActivity"
             android:screenOrientation="portrait"
             android:label="@string/crop"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>
