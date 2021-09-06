@@ -22,6 +22,9 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
 
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+        _result!(nil)
+        
+        dismiss(animated: true)
     }
 
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
@@ -52,8 +55,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         
 
         let imagePath = saveImage(image:results.croppedScan.image)
-     _result!(imagePath)
-       self.dismiss(animated: true)
+        _result!(imagePath)
+        self.dismiss(animated: true)
     }
     
 

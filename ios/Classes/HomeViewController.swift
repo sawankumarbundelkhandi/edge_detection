@@ -54,7 +54,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
     
     lazy var selectPhotoButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "gallery", in: Bundle(for: ImageScannerController.self), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.setImage(UIImage(named: "gallery", in: Bundle(for: SwiftEdgeDetectionPlugin.self), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = UIColor.white
         button.addTarget(self, action: #selector(selectPhoto), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +65,10 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
     
     @objc private func cancelImageScannerController() {
         hideButtons()
+        _result!(nil)
+        
         cameraController?.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
     @objc private func captureImage(_ sender: UIButton) {
