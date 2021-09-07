@@ -12,6 +12,9 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         
         hideButtons()
         let scannerVC = ImageScannerController(image: image, delegate: self)
+        if #available(iOS 13.0, *) {
+            scannerVC.isModalInPresentation = true
+        }
         present(scannerVC, animated: true)
     }
     
@@ -25,6 +28,9 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         if self.isBeingPresented {
             cameraController = CameraScannerViewController()
             cameraController.delegate = self
+            if #available(iOS 13.0, *) {
+                cameraController.isModalInPresentation = true
+            }
             present(cameraController, animated: true) {
                 if let window = UIApplication.shared.keyWindow {
                     window.addSubview(self.selectPhotoButton)
@@ -83,6 +89,9 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
             
             let scanPhotoVC = ScanPhotoViewController()
             scanPhotoVC._result = _result
+            if #available(iOS 13.0, *) {
+                scanPhotoVC.isModalInPresentation = true
+            }
             window.rootViewController?.present(scanPhotoVC, animated: true)
         }
     }
