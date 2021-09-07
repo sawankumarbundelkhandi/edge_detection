@@ -243,6 +243,15 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
     }
 
-    private fun getMaxResolution(): Camera.Size? =
-        mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
+    private fun getMaxResolution(): Camera.Size? = mCamera?.parameters?.supportedPreviewSizes?.maxWith(object: Comparator<Camera.Size?> {
+        override fun compare(p1: Camera.Size?, p2: Camera.Size?): Int = when {
+            p1!!.width > p2!!.width -> 1
+            p1.width == p2.width -> when {
+                p1.height > p2.height -> 1
+                p1.height == p2.height -> 0
+                else -> -1
+            }
+            else -> -1
+        }
+    })
 }
