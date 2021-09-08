@@ -43,14 +43,15 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
         croppedBitmap = Bitmap.createBitmap(croppedPicture!!.width(), croppedPicture!!.height(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(croppedPicture, croppedBitmap)
 
-        val dir = File(Environment.getExternalStorageDirectory(), IMAGES_DIR)
+        val dir = File(context.cacheDir, IMAGES_DIR)
         if (!dir.exists()) {
             dir.mkdirs()
         }
 
         val cropPic = croppedBitmap
         if (null != cropPic) {
-            val file = File(dir, "crop_${SystemClock.currentThreadTimeMillis()}.jpeg")
+            val file = File.createTempFile("crop_${SystemClock.currentThreadTimeMillis()}", ".jpeg", dir)
+            file.deleteOnExit()
             val outStream = FileOutputStream(file)
             cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
             outStream.flush()
