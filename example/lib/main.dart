@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:edge_detection/edge_detection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,8 +28,8 @@ class _MyAppState extends State<MyApp> {
     try {
       imagePath = (await EdgeDetection.detectEdge);
       print("$imagePath");
-    } on PlatformException {
-      imagePath = 'Failed to get cropped image path.';
+    } on PlatformException catch (e) {
+      imagePath = e.toString();
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -64,8 +64,9 @@ class _MyAppState extends State<MyApp> {
             Padding(
               padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
               child: Text(
-                '$_imagePath\n',
-                style: TextStyle(fontSize: 10),
+                _imagePath.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14),
               ),
             ),
           ],
