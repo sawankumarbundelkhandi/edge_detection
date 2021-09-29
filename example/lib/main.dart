@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
@@ -49,27 +50,38 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: getImage,
-                child: Text('Scan'),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: getImage,
+                  child: Text('Scan'),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            Text('Cropped image path:'),
-            Padding(
-              padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
-              child: Text(
-                _imagePath.toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14),
+              SizedBox(height: 20),
+              Text('Cropped image path:'),
+              Padding(
+                padding: const EdgeInsets.only(top: 0, left: 0, right: 0),
+                child: Text(
+                  _imagePath.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
-            ),
-          ],
+              Visibility(
+                visible: _imagePath != null,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.file(
+                    File(_imagePath ?? ''),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

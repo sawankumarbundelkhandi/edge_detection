@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
 import android.provider.MediaStore
@@ -162,7 +163,12 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(context, "please grant write file permission and try again", Toast.LENGTH_SHORT).show()
         } else {
-            val dir = File(Environment.getExternalStorageDirectory(), IMAGES_DIR)
+            val dir: File = if (Build.VERSION.SDK_INT < 29) {
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            } else {
+                val path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                File(path, IMAGES_DIR)
+            }
             if (!dir.exists()) {
                 dir.mkdirs()
             }
