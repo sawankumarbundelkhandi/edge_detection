@@ -77,7 +77,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         shut.setOnClickListener {
-            mPresenter.shut()
+           if (mPresenter.canShutt) {
+               mPresenter.shut()
+           }
         }
     }
 

@@ -10,8 +10,8 @@ import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
 import android.hardware.Camera.ShutterCallback
-import android.media.MediaPlayer
 import android.media.MediaActionSound
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.SystemClock
 import android.util.Log
@@ -47,7 +47,6 @@ import android.view.Display
 import kotlin.math.max
 import kotlin.math.min
 
-
 class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy) :
     SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
     private val TAG: String = "ScanPresenter"
@@ -56,15 +55,17 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private val executor: ExecutorService
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
-    private var mCameraLensFacing: String = "0"
+    private var mCameraLensFacing: String? = null
 
     var mLastClickTime=0L
+    private var shutted: Boolean = true
 
     init {
         mSurfaceHolder.addCallback(this)
         executor = Executors.newSingleThreadExecutor()
         proxySchedule = Schedulers.from(executor)
     }
+
     fun isOpenRecently():Boolean{
         if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
             return true
@@ -81,19 +82,23 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.stopPreview() ?: Log.i(TAG, "camera null")
     }
 
+    val canShutt: Boolean get() = shutted
+    
     fun shut() {
         if (isOpenRecently()) {
             Log.i(TAG, "NOT Taking click")
             return
         }
         busy = true
+        shutted = false
         Log.i(TAG, "try to focus")
+
         mCamera?.autoFocus { b, _ ->
             Log.i(TAG, "focus result: " + b)
             mCamera?.enableShutterSound(false)
             mCamera?.takePicture(null, null, this)
-            //MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
         }
+
     }
 
     fun updateCamera() {
@@ -111,12 +116,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.startPreview()
     }
 
-
-
     val cameraManager =context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
     fun getCameraCharacteristics(id: String): CameraCharacteristics? {
         return cameraManager?.getCameraCharacteristics(id)
     }
+
     fun getBackFacingCameraId(): String? {
         for (camID in cameraManager!!.cameraIdList) {
             val lensFacing = getCameraCharacteristics(camID)?.get(CameraCharacteristics.LENS_FACING)!!
@@ -127,6 +132,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         return mCameraLensFacing
     }
+
     fun initCamera() {
 
         try {
@@ -138,9 +144,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             return
         }
 
-
-        val cameraCharacteristics =    cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
-
+        val cameraCharacteristics = cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
 
         val param = mCamera?.parameters
         val availble_res = getOptimalResolution()
@@ -159,7 +163,13 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
         val display = iView.getDisplay()
         val point = Point()
-        display.getRealSize(point)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(point)
+        }else{
+            display.getSize(point)
+        }
+
         val displayWidth = minOf(point.x, point.y)
         val displayHeight = maxOf(point.x, point.y)
         val displayRatio = displayWidth.div(displayHeight.toFloat())
@@ -186,7 +196,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
@@ -194,14 +204,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         }
         param?.flashMode = Camera.Parameters.FLASH_MODE_OFF
 
-        try {
-            mCamera?.parameters = param
-        } catch (e: RuntimeException) {
-            try {
-                mCamera?.parameters?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            } catch (e: RuntimeException) {
-            }
-        }
+        mCamera?.parameters = param
         mCamera?.setDisplayOrientation(90)
         mCamera?.enableShutterSound(false)
 
@@ -250,6 +253,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                         CropActivity::class.java
                     ), REQUEST_CODE
                 )
+                shutted = true;
                 busy = false
             }
     }
@@ -270,15 +274,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
                     val height = parameters?.previewSize?.height
-                    val yuv = YuvImage(
-                        p0, parameters?.previewFormat ?: 0, width ?: 320, height
-                            ?: 480, null
-                    )
+                    val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 1080, height
+                            ?: 1920, null)
                     val out = ByteArrayOutputStream()
-                    yuv.compressToJpeg(Rect(0, 0, width ?: 320, height ?: 480), 100, out)
+                    yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
                     val bytes = out.toByteArray()
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-
                     val img = Mat()
                     Utils.bitmapToMat(bitmap, img)
                     bitmap.recycle()
