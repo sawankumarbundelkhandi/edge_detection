@@ -9,15 +9,10 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
-import android.hardware.Camera.ShutterCallback
-import android.media.MediaActionSound
-import android.media.MediaPlayer
-import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
-import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
 import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.crop.CropActivity
@@ -57,7 +52,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private var busy: Boolean = false
     private var mCameraLensFacing: String? = null
 
-    var mLastClickTime=0L
+    private var mLastClickTime=0L
     private var shutted: Boolean = true
 
     init {
@@ -66,7 +61,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         proxySchedule = Schedulers.from(executor)
     }
 
-    fun isOpenRecently():Boolean{
+    private fun isOpenRecently():Boolean{
         if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
             return true
         }
@@ -75,6 +70,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     }
 
     fun start() {
+
         mCamera?.startPreview() ?: Log.i(TAG, "camera null")
     }
 
@@ -82,7 +78,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.stopPreview() ?: Log.i(TAG, "camera null")
     }
 
-    val canShutt: Boolean get() = shutted
+    val canShut: Boolean get() = shutted
     
     fun shut() {
         if (isOpenRecently()) {
@@ -94,7 +90,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         Log.i(TAG, "try to focus")
 
         mCamera?.autoFocus { b, _ ->
-            Log.i(TAG, "focus result: " + b)
+            Log.i(TAG, "focus result: $b")
             mCamera?.enableShutterSound(false)
             mCamera?.takePicture(null, null, this)
         }
@@ -116,14 +112,14 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         mCamera?.startPreview()
     }
 
-    val cameraManager =context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    private val cameraManager =context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    fun getCameraCharacteristics(id: String): CameraCharacteristics? {
-        return cameraManager?.getCameraCharacteristics(id)
+    private fun getCameraCharacteristics(id: String): CameraCharacteristics? {
+        return cameraManager.getCameraCharacteristics(id)
     }
 
-    fun getBackFacingCameraId(): String? {
-        for (camID in cameraManager!!.cameraIdList) {
+    private fun getBackFacingCameraId(): String? {
+        for (camID in cameraManager.cameraIdList) {
             val lensFacing = getCameraCharacteristics(camID)?.get(CameraCharacteristics.LENS_FACING)!!
             if (lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
                 mCameraLensFacing = camID
@@ -151,24 +147,21 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         
         //val size = getMaxResolution()
 
-        val size = getPreviewOutputSize(
-                iView.getDisplay(), cameraCharacteristics, SurfaceHolder::class.java)
+        val size = iView.getCurrentDisplay()?.let {
+            getPreviewOutputSize(
+                it, cameraCharacteristics, SurfaceHolder::class.java)
+        }
        // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
-        Log.d(TAG, "Selected preview size: ${size.width}${size.height}")
+        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
        // viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
 
-
-        Log.i(TAG,size?.width?.toString())
+        size?.width?.toString()?.let { Log.i(TAG, it) }
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
-        val display = iView.getDisplay()
+        val display = iView.getCurrentDisplay()
         val point = Point()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            display.getRealSize(point)
-        }else{
-            display.getSize(point)
-        }
+        display?.getRealSize(point)
 
         val displayWidth = minOf(point.x, point.y)
         val displayHeight = maxOf(point.x, point.y)
@@ -196,7 +189,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
@@ -312,7 +305,6 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
     }
 
-    private fun getMaxResolution(): Camera.Size? = mCamera?.parameters?.supportedPreviewSizes?.maxBy { it.width }
     /** [CameraCharacteristics] corresponding to the provided Camera ID */
 
     class SmartSize(width: Int, height: Int) {
@@ -323,10 +315,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     }
 
     /** Standard High Definition size for pictures and video */
-    val SIZE_1080P: SmartSize = SmartSize(1920, 1080)
+    private val SIZE_1080P: SmartSize = SmartSize(1920, 1080)
 
     /** Returns a [SmartSize] object for the given [Display] */
-    fun getDisplaySmartSize(display: Display): SmartSize {
+    private fun getDisplaySmartSize(display: Display): SmartSize {
         val outPoint = Point()
         display.getRealSize(outPoint)
         return SmartSize(outPoint.x, outPoint.y)
@@ -337,7 +329,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
      * https://d.android.com/reference/android/hardware/camera2/CameraDevice and
      * https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap
      */
-    fun <T>getPreviewOutputSize(
+    private fun <T>getPreviewOutputSize(
             display: Display,
             characteristics: CameraCharacteristics,
             targetClass: Class<T>,

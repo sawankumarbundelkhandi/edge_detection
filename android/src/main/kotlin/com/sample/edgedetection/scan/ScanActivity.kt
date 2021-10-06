@@ -21,7 +21,6 @@ import org.opencv.android.OpenCVLoader
 class ScanActivity : BaseActivity(), IScanView.Proxy {
 
     private val REQUEST_CAMERA_PERMISSION = 0
-    private val EXIT_TIME = 2000
 
     private lateinit var mPresenter: ScanPresenter
 
@@ -77,7 +76,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         shut.setOnClickListener {
-           if (mPresenter.canShutt) {
+           if (mPresenter.canShut) {
                mPresenter.shut()
            }
         }
@@ -139,7 +138,13 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
     }
 
-    override fun getDisplay(): Display = windowManager.defaultDisplay
+    override fun getCurrentDisplay(): Display? {
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            this.display
+        } else {
+            this.windowManager.defaultDisplay
+        }
+    }
 
     override fun getSurfaceView(): SurfaceView = surface
 

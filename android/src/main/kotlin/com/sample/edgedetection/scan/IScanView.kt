@@ -7,7 +7,7 @@ import com.sample.edgedetection.view.PaperRectangle
 interface IScanView {
     interface Proxy {
         fun exit()
-        fun getDisplay(): Display
+        fun getCurrentDisplay(): Display?
         fun getSurfaceView(): SurfaceView
         fun getPaperRect(): PaperRectangle
     }

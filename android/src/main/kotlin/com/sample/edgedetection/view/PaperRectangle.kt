@@ -13,6 +13,7 @@ import com.sample.edgedetection.processor.Corners
 import com.sample.edgedetection.processor.TAG
 import org.opencv.core.Point
 import org.opencv.core.Size
+import kotlin.math.abs
 
 
 class PaperRectangle : View {
@@ -138,7 +139,8 @@ class PaperRectangle : View {
 
     private fun calculatePoint2Move(downX: Float, downY: Float) {
         val points = listOf(tl, tr, br, bl)
-        point2Move = points.minBy { Math.abs((it.x - downX).times(it.y - downY)) } ?: tl
+        point2Move = points.minByOrNull { abs((it.x - downX).times(it.y - downY)) }
+            ?: tl
     }
 
     private fun movePoints() {

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources
 import com.sample.edgedetection.R
 import com.sample.edgedetection.SCANNED_RESULT
 import com.sample.edgedetection.base.BaseActivity
@@ -44,7 +45,9 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
         if (showMenuItems) {
             menu.findItem(R.id.action_label)
-                .setTitle(applicationContext.getString(R.string.done)).icon = applicationContext.getDrawable(R.drawable.ic_done)
+                .setTitle(applicationContext.getString(R.string.done)).icon = AppCompatResources.getDrawable(
+                applicationContext, R.drawable.ic_done
+            )
         }
 
         return super.onCreateOptionsMenu(menu)
@@ -75,7 +78,7 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
             if (item.title == applicationContext.getString(R.string.done)) {
                 Log.e(TAG, "Saved touched!")
-                var path = mPresenter.save()
+                val path = mPresenter.save()
                 Log.e(TAG, "Saved touched! $path")
                 setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
                 System.gc()
