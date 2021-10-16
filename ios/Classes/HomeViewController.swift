@@ -155,7 +155,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         scanner.dismiss(animated: true)
         self.hideButtons()
         
-        let imagePath = saveImage(image:results.croppedScan.image)
+        let imagePath = saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
         _result!(imagePath)
         self.dismiss(animated: true)
     }
