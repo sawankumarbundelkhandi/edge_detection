@@ -10,7 +10,7 @@ import Flutter
 import Foundation
 
 class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+    
     var _result:FlutterResult?
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -19,7 +19,7 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         
         dismiss(animated: true)
     }
-
+    
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         picker.dismiss(animated: true)
         
@@ -31,9 +31,9 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         }
         present(scannerVC, animated: true)
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
-
+        
         if self.isBeingPresented {
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
@@ -43,32 +43,32 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
             present(imagePicker, animated: true)
         }
     }
-
+    
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         print(error)
         _result!(nil)
         self.dismiss(animated: true)
     }
-
+    
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
         // Your ViewController is responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
         
-
+        
         let imagePath = saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
         _result!(imagePath)
         self.dismiss(animated: true)
     }
     
-
+    
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
         // Your ViewController is responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
-         _result!(nil)
+        _result!(nil)
         self.dismiss(animated: true)
     }
     
-
+    
     func saveImage(image: UIImage) -> String? {
         guard let data = image.jpegData(compressionQuality: 1) ?? image.pngData() else {
             return nil
@@ -79,10 +79,10 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         let fileName = randomString(length:10);
         let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
         
-
+        
         do {
             let fileManager = FileManager.default
-
+            
             // Check if file exists
             if fileManager.fileExists(atPath: filePath.path) {
                 // Delete file
@@ -90,12 +90,12 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
             } else {
                 print("File does not exist")
             }
-
+            
         }
         catch let error as NSError {
             print("An error took place: \(error)")
         }
-
+        
         do {
             try data.write(to: filePath)
             return filePath.path
@@ -105,7 +105,7 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         }
     }
     
-
+    
     func randomString(length: Int) -> String {
         
         let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

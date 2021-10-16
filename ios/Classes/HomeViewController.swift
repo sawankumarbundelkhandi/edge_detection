@@ -18,11 +18,11 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         present(scannerVC, animated: true)
     }
     
-
+    
     var cameraController: CameraScannerViewController!
     var _result:FlutterResult?
-
-    override func viewDidAppear(_ animated: Bool) {              
+    
+    override func viewDidAppear(_ animated: Bool) {
         if self.isBeingPresented {
             cameraController = CameraScannerViewController()
             cameraController.delegate = self
@@ -39,7 +39,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
                 appearance.backgroundColor = .systemBackground
                 navigationBar.standardAppearance = appearance;
                 UINavigationBar.appearance().scrollEdgeAppearance = appearance
-
+                
                 let appearanceTB = UITabBarAppearance()
                 appearanceTB.configureWithOpaqueBackground()
                 appearanceTB.backgroundColor = .systemBackground
@@ -55,7 +55,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
                     self.setupConstraints()
                 }
             }
-        }  
+        }
     }
     
     private lazy var shutterButton: ShutterButton = {
@@ -64,7 +64,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         button.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
         return button
     }()
-
+    
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
@@ -158,14 +158,14 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         }
         NSLayoutConstraint.activate(selectPhotoButtonConstraints + cancelButtonConstraints + shutterButtonConstraints)
     }
-
+    
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         print(error)
         _result!(nil)
         self.hideButtons()
         self.dismiss(animated: true)
     }
-
+    
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
         // Your ViewController is responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
@@ -175,26 +175,26 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         _result!(imagePath)
         self.dismiss(animated: true)
     }
-
+    
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
         // Your ViewController is responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
         self.hideButtons()
-
+        
         _result!(nil)
         self.dismiss(animated: true)
     }
-
+    
     func saveImage(image: UIImage) -> String? {
-
+        
         guard let data = image.jpegData(compressionQuality: 1) ?? image.pngData() else {
             return nil
         }
-
+        
         guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
             return nil
         }
-
+        
         let fileName = randomString(length:10);
         let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
         do {
@@ -220,7 +220,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
             return nil
         }
     }
-
+    
     func randomString(length: Int) -> String {
         let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let len = UInt32(letters.length)
