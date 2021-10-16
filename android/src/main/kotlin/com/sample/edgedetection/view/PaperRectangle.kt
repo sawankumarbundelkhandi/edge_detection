@@ -38,16 +38,16 @@ class PaperRectangle : View {
     private var latestDownY = 0.0F
 
     init {
-        rectPaint.color = Color.WHITE
+        rectPaint.color = Color.argb(128, 255, 255, 255)
         rectPaint.isAntiAlias = true
         rectPaint.isDither = true
         rectPaint.strokeWidth = 6F
-        rectPaint.style = Paint.Style.STROKE
+        rectPaint.style = Paint.Style.FILL_AND_STROKE
         rectPaint.strokeJoin = Paint.Join.ROUND    // set the join to round you want
         rectPaint.strokeCap = Paint.Cap.ROUND      // set the paint cap to round too
         rectPaint.pathEffect = CornerPathEffect(10f)
 
-        circlePaint.color = Color.LTGRAY
+        circlePaint.color = Color.WHITE
         circlePaint.isDither = true
         circlePaint.isAntiAlias = true
         circlePaint.strokeWidth = 4F
