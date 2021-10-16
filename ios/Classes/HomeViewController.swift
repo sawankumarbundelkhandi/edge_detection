@@ -22,15 +22,31 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
     var cameraController: CameraScannerViewController!
     var _result:FlutterResult?
 
-    override func viewDidAppear(_ animated: Bool) {       
-
-        
+    override func viewDidAppear(_ animated: Bool) {              
         if self.isBeingPresented {
             cameraController = CameraScannerViewController()
             cameraController.delegate = self
             if #available(iOS 13.0, *) {
                 cameraController.isModalInPresentation = true
             }
+            
+            // Temp fix for https://github.com/WeTransfer/WeScan/issues/320
+            if #available(iOS 15, *) {
+                let appearance = UINavigationBarAppearance()
+                let navigationBar = UINavigationBar()
+                appearance.configureWithOpaqueBackground()
+                appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+                appearance.backgroundColor = .systemBackground
+                navigationBar.standardAppearance = appearance;
+                UINavigationBar.appearance().scrollEdgeAppearance = appearance
+
+                let appearanceTB = UITabBarAppearance()
+                appearanceTB.configureWithOpaqueBackground()
+                appearanceTB.backgroundColor = .systemBackground
+                UITabBar.appearance().standardAppearance = appearanceTB
+                UITabBar.appearance().scrollEdgeAppearance = appearanceTB
+            }
+            
             present(cameraController, animated: true) {
                 if let window = UIApplication.shared.keyWindow {
                     window.addSubview(self.selectPhotoButton)
