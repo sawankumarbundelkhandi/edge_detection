@@ -51,8 +51,8 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
         if (showMenuItems) {
             menu.findItem(R.id.action_label)
-                .setTitle(applicationContext.getString(R.string.done)).icon = AppCompatResources.getDrawable(
-                applicationContext, R.drawable.ic_done
+                    .setTitle(applicationContext.getString(R.string.done)).icon = AppCompatResources.getDrawable(
+                    applicationContext, R.drawable.ic_done
             )
         }
 

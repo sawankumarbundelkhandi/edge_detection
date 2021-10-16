@@ -15,7 +15,7 @@ import io.flutter.plugin.common.PluginRegistry
 
 class EdgeDetectionPlugin : FlutterPlugin, ActivityAware {
     private var handler: EdgeDetectionHandler? = null
-    
+
     override fun onAttachedToEngine(binding: FlutterPluginBinding) {
         handler = EdgeDetectionHandler()
         val channel = MethodChannel(
@@ -23,11 +23,13 @@ class EdgeDetectionPlugin : FlutterPlugin, ActivityAware {
         )
         channel.setMethodCallHandler(handler)
     }
+
     override fun onDetachedFromEngine(binding: FlutterPluginBinding) {}
-    
+
     override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
         handler?.setActivityPluginBinding(activityPluginBinding)
     }
+
     override fun onDetachedFromActivityForConfigChanges() {}
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
     override fun onDetachedFromActivity() {}
@@ -37,7 +39,7 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
     private var activityPluginBinding: ActivityPluginBinding? = null
     private var result: Result? = null
     private var methodCall: MethodCall? = null
-    
+
     fun setActivityPluginBinding(activityPluginBinding: ActivityPluginBinding) {
         activityPluginBinding.addActivityResultListener(this)
         this.activityPluginBinding = activityPluginBinding
@@ -61,7 +63,7 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             }
         }
     }
-    
+
     private fun getActivity(): Activity? {
         return activityPluginBinding?.activity
     }
@@ -92,8 +94,8 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
     }
 
     private fun setPendingMethodCallAndResult(
-        methodCall: MethodCall,
-        result: Result
+            methodCall: MethodCall,
+            result: Result
     ): Boolean {
         if (this.result != null) {
             return false

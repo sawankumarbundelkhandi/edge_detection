@@ -29,8 +29,8 @@
             android:layout_centerInParent="true"
             android:background="@drawable/round_button"
             android:padding="8dp"
-            app:srcCompat="@drawable/ic_menu_camera"
-            android:tint="@android:color/darker_gray" />
+            android:tint="@android:color/darker_gray"
+            app:srcCompat="@drawable/ic_menu_camera" />
 
         <ImageView
             android:id="@+id/gallery"

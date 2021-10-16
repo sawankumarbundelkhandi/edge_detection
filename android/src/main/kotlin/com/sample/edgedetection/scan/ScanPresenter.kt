@@ -9,8 +9,12 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.params.StreamConfigurationMap
 import android.os.SystemClock
 import android.util.Log
+import android.view.Display
 import android.view.SurfaceHolder
 import android.widget.Toast
 import com.sample.edgedetection.REQUEST_CODE
@@ -18,8 +22,6 @@ import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.crop.CropActivity
 import com.sample.edgedetection.processor.Corners
 import com.sample.edgedetection.processor.processPicture
-import android.hardware.camera2.CameraManager
-
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,15 +37,12 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.params.StreamConfigurationMap
-import android.util.Size as SizeB
-import android.view.Display
 import kotlin.math.max
 import kotlin.math.min
+import android.util.Size as SizeB
 
 class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy) :
-    SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
+        SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
     private val TAG: String = "ScanPresenter"
     private var mCamera: Camera? = null
     private val mSurfaceHolder: SurfaceHolder = iView.getSurfaceView().holder
@@ -52,7 +51,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private var busy: Boolean = false
     private var mCameraLensFacing: String? = null
 
-    private var mLastClickTime=0L
+    private var mLastClickTime = 0L
     private var shutted: Boolean = true
 
     init {
@@ -61,8 +60,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         proxySchedule = Schedulers.from(executor)
     }
 
-    private fun isOpenRecently():Boolean{
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 3000){
+    private fun isOpenRecently(): Boolean {
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
             return true
         }
         mLastClickTime = SystemClock.elapsedRealtime()
@@ -79,7 +78,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     }
 
     val canShut: Boolean get() = shutted
-    
+
     fun shut() {
         if (isOpenRecently()) {
             Log.i(TAG, "NOT Taking click")
@@ -136,7 +135,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         } catch (e: RuntimeException) {
             e.stackTrace
             Toast.makeText(context, "cannot open camera, please grant camera", Toast.LENGTH_SHORT)
-                .show()
+                    .show()
             return
         }
 
@@ -144,16 +143,16 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
         val param = mCamera?.parameters
         val availble_res = getOptimalResolution()
-        
+
         //val size = getMaxResolution()
 
         val size = iView.getCurrentDisplay()?.let {
             getPreviewOutputSize(
-                it, cameraCharacteristics, SurfaceHolder::class.java)
+                    it, cameraCharacteristics, SurfaceHolder::class.java)
         }
-       // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
+        // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
         Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
-       // viewFinder.setAspectRatio(previewSize.width, previewSize.height)
+        // viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
 
         size?.width?.toString()?.let { Log.i(TAG, it) }
@@ -207,7 +206,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         SourceManager.corners = processPicture(pic)
         Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
         SourceManager.pic = pic
-        (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java),REQUEST_CODE)
+        (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java), REQUEST_CODE)
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
@@ -254,45 +253,45 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         busy = true
         try {
             Observable.just(p0)
-                .observeOn(proxySchedule)
-                .doOnError {}
-                .subscribe({
-                    Log.i(TAG, "start prepare paper")
-                    val parameters = p1?.parameters
-                    val width = parameters?.previewSize?.width
-                    val height = parameters?.previewSize?.height
-                    val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 1080, height
-                            ?: 1920, null)
-                    val out = ByteArrayOutputStream()
-                    yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
-                    val bytes = out.toByteArray()
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    val img = Mat()
-                    Utils.bitmapToMat(bitmap, img)
-                    bitmap.recycle()
-                    Core.rotate(img, img, Core.ROTATE_90_CLOCKWISE)
-                    try {
-                        out.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-
-                    Observable.create<Corners> {
-                        val corner = processPicture(img)
-                        busy = false
-                        if (null != corner && corner.corners.size == 4) {
-                            it.onNext(corner)
-                        } else {
-                            it.onError(Throwable("paper not detected"))
+                    .observeOn(proxySchedule)
+                    .doOnError {}
+                    .subscribe({
+                        Log.i(TAG, "start prepare paper")
+                        val parameters = p1?.parameters
+                        val width = parameters?.previewSize?.width
+                        val height = parameters?.previewSize?.height
+                        val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 1080, height
+                                ?: 1920, null)
+                        val out = ByteArrayOutputStream()
+                        yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
+                        val bytes = out.toByteArray()
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        val img = Mat()
+                        Utils.bitmapToMat(bitmap, img)
+                        bitmap.recycle()
+                        Core.rotate(img, img, Core.ROTATE_90_CLOCKWISE)
+                        try {
+                            out.close()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
                         }
-                    }.observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            iView.getPaperRect().onCornersDetected(it)
 
-                        }, {
-                            iView.getPaperRect().onCornersNotDetected()
-                        })
-                }, { throwable -> Log.e(TAG, throwable.message!!) })
+                        Observable.create<Corners> {
+                            val corner = processPicture(img)
+                            busy = false
+                            if (null != corner && corner.corners.size == 4) {
+                                it.onNext(corner)
+                            } else {
+                                it.onError(Throwable("paper not detected"))
+                            }
+                        }.observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    iView.getPaperRect().onCornersDetected(it)
+
+                                }, {
+                                    iView.getPaperRect().onCornersNotDetected()
+                                })
+                    }, { throwable -> Log.e(TAG, throwable.message!!) })
         } catch (e: Exception) {
             print(e.message)
         }
@@ -323,7 +322,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
      * https://d.android.com/reference/android/hardware/camera2/CameraDevice and
      * https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap
      */
-    private fun <T>getPreviewOutputSize(
+    private fun <T> getPreviewOutputSize(
             display: Display,
             characteristics: CameraCharacteristics,
             targetClass: Class<T>,
@@ -353,17 +352,18 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         // Then, get the largest output size that is smaller or equal than our max size
         return validSizes.first { it.long <= maxSize.long && it.short <= maxSize.short }.size
     }
-    private fun getOptimalResolution(): Camera.Size?{
+
+    private fun getOptimalResolution(): Camera.Size? {
 
 
         val resolutions = mCamera?.parameters?.supportedPreviewSizes
-        if(resolutions!=null){
+        if (resolutions != null) {
             for (item in resolutions) {
                 println("${item.width}, ${item.height}")
             }
         }
         return null
-        
+
     }
 
 }

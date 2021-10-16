@@ -60,13 +60,13 @@ fun enhancePicture(src: Bitmap?): Bitmap {
     Utils.bitmapToMat(src, srcMat)
     Imgproc.cvtColor(srcMat, srcMat, Imgproc.COLOR_RGBA2GRAY)
     Imgproc.adaptiveThreshold(
-        srcMat,
-        srcMat,
-        255.0,
-        Imgproc.ADAPTIVE_THRESH_MEAN_C,
-        Imgproc.THRESH_BINARY,
-        15,
-        15.0
+            srcMat,
+            srcMat,
+            255.0,
+            Imgproc.ADAPTIVE_THRESH_MEAN_C,
+            Imgproc.THRESH_BINARY,
+            15,
+            15.0
     )
     val result = Bitmap.createBitmap(src?.width ?: 1080, src?.height ?: 1920, Bitmap.Config.RGB_565)
     Utils.matToBitmap(srcMat, result, true)
@@ -93,11 +93,11 @@ private fun findContours(src: Mat): ArrayList<MatOfPoint> {
     val contours = ArrayList<MatOfPoint>()
     val hierarchy = Mat()
     Imgproc.findContours(
-        dilate,
-        contours,
-        hierarchy,
-        Imgproc.RETR_TREE,
-        Imgproc.CHAIN_APPROX_SIMPLE
+            dilate,
+            contours,
+            hierarchy,
+            Imgproc.RETR_TREE,
+            Imgproc.CHAIN_APPROX_SIMPLE
     )
     contours.sortByDescending { p: MatOfPoint -> Imgproc.contourArea(p) }
     hierarchy.release()

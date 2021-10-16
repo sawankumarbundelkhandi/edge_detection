@@ -1,24 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.sample.edgedetection">
+    package="com.sample.edgedetection">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:supportsRtl="true"     
-        android:requestLegacyExternalStorage="true"   
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity 
+        <activity
             android:name=".scan.ScanActivity"
-            android:screenOrientation="portrait"
             android:label="@string/scan"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".crop.CropActivity"
-            android:screenOrientation="portrait"
             android:label="@string/crop"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

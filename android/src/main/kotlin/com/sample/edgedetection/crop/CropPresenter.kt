@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
 import android.provider.MediaStore
@@ -25,7 +26,6 @@ import org.opencv.android.Utils
 import org.opencv.core.Mat
 import java.io.File
 import java.io.FileOutputStream
-import android.os.Build
 
 
 const val IMAGES_DIR = "smart_scanner"
@@ -123,7 +123,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
             return
         }
 
-        val imgToEnhance:Bitmap? = when {
+        val imgToEnhance: Bitmap? = when {
             enhancedPicture != null -> {
                 enhancedPicture
             }
@@ -149,7 +149,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
                 }
     }
 
-    fun reset(){
+    fun reset() {
         if (croppedBitmap == null) {
             Log.i(TAG, "picture null?")
             return
@@ -169,12 +169,12 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
             return
         }
 
-        if(enhancedPicture != null && rotateBitmap == null){
+        if (enhancedPicture != null && rotateBitmap == null) {
             Log.i(TAG, "enhancedPicture ***** TRUE")
             rotateBitmap = enhancedPicture
         }
 
-        if(rotateBitmap == null){
+        if (rotateBitmap == null) {
             Log.i(TAG, "rotateBitmap ***** TRUE")
             rotateBitmap = croppedBitmap
         }
@@ -228,7 +228,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
             val dir: File = when {
                 Build.VERSION.SDK_INT < 29 -> {
                     Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES)
+                            Environment.DIRECTORY_PICTURES)
                 }
                 else -> {
                     val path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -258,7 +258,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
                 outStream.flush()
                 outStream.close()
                 rotatePic.recycle()
-                addImageToGalleryOldApi(file.absolutePath,context)
+                addImageToGalleryOldApi(file.absolutePath, context)
                 Log.i(TAG, "RotateBitmap Saved")
                 return file.absolutePath
                 //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
@@ -275,12 +275,12 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
                     outStream.flush()
                     outStream.close()
                     pic.recycle()
-                    addImageToGalleryOldApi(file.absolutePath,context)
+                    addImageToGalleryOldApi(file.absolutePath, context)
                     Log.i(TAG, "EnhancedPicture Saved")
                     return file.absolutePath
                     //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
                     //Toast.makeText(context, "picture saved, path: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                 } else {
+                } else {
                     val cropPic = croppedBitmap
                     if (null != cropPic) {
                         addImageToGallery("crop_${SystemClock.currentThreadTimeMillis()}.jpeg", croppedBitmap!!, this.context)
@@ -290,7 +290,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
                         outStream.flush()
                         outStream.close()
                         cropPic.recycle()
-                        addImageToGalleryOldApi(file.absolutePath,context)
+                        addImageToGalleryOldApi(file.absolutePath, context)
                         Log.i(TAG, "CroppedBitmap Saved")
                         return file.absolutePath
                         //addImageToGallery(file.absolutePath, this.context) Commented as we don't want the images in the gallery.
@@ -308,7 +308,7 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
     }
 
     // Extension function to rotate a bitmap
-    private fun Bitmap.rotateInt(degree:Int):Bitmap{
+    private fun Bitmap.rotateInt(degree: Int): Bitmap {
         // Initialize a new matrix
         val matrix = Matrix()
 

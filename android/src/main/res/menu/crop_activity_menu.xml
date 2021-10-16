@@ -1,34 +1,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_label"
+        android:icon="@drawable/ic_crop"
         android:title="@string/crop"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_crop"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/rotation_image"
+        android:icon="@drawable/ic_rotate"
         android:title="@string/rotate"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_rotate"/>
+        app:showAsAction="always" />
 
-<!--    <item-->
-<!--        android:id="@+id/gray"-->
-<!--        android:title="@string/black"-->
-<!--        android:icon="@drawable/ic_invert_colors"/>-->
-<!--    <item android:id="@+id/reset"-->
-<!--        android:title="@string/reset"-->
-<!--        android:icon="@drawable/ic_reset_colors"/>-->
+    <!--    <item-->
+    <!--        android:id="@+id/gray"-->
+    <!--        android:title="@string/black"-->
+    <!--        android:icon="@drawable/ic_invert_colors"/>-->
+    <!--    <item android:id="@+id/reset"-->
+    <!--        android:title="@string/reset"-->
+    <!--        android:icon="@drawable/ic_reset_colors"/>-->
 
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/enhance_group">
+    <group
+        android:id="@+id/enhance_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/gray"
-            android:title="@string/black"
-            android:icon="@drawable/ic_done"/>
-        <item android:id="@+id/reset"
-            android:title="@string/reset"
-            android:icon="@drawable/ic_reset_colors"/>
+            android:icon="@drawable/ic_done"
+            android:title="@string/black" />
+        <item
+            android:id="@+id/reset"
+            android:icon="@drawable/ic_reset_colors"
+            android:title="@string/reset" />
     </group>
 </menu>

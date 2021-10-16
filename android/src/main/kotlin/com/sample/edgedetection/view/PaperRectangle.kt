@@ -19,9 +19,9 @@ class PaperRectangle : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes)
     constructor(context: Context, attributes: AttributeSet, defTheme: Int) : super(
-        context,
-        attributes,
-        defTheme
+            context,
+            attributes,
+            defTheme
     )
 
     private val rectPaint = Paint()
@@ -82,7 +82,7 @@ class PaperRectangle : View {
     }
 
     fun onCorners2Crop(corners: Corners?, size: Size?) {
-        if (size == null){
+        if (size == null) {
             return
         }
 
@@ -98,7 +98,8 @@ class PaperRectangle : View {
         //exclude navigation bar height
         val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
-        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight) ?: 1.0
+        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight)
+                ?: 1.0
         resize()
         movePoints()
     }
@@ -144,7 +145,7 @@ class PaperRectangle : View {
     private fun calculatePoint2Move(downX: Float, downY: Float) {
         val points = listOf(tl, tr, br, bl)
         point2Move = points.minByOrNull { abs((it.x - downX).times(it.y - downY)) }
-            ?: tl
+                ?: tl
     }
 
     private fun movePoints() {
