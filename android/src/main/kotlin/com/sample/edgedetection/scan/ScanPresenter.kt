@@ -210,6 +210,13 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
     }
 
+    fun detectEdge(pic: Mat) {
+        SourceManager.corners = processPicture(pic)
+        Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
+        SourceManager.pic = pic
+        (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java),REQUEST_CODE)
+    }
+
     override fun surfaceCreated(p0: SurfaceHolder) {
         initCamera()
     }
@@ -230,34 +237,21 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     override fun onPictureTaken(p0: ByteArray?, p1: Camera?) {
         Log.i(TAG, "on picture taken")
         Observable.just(p0)
-            .subscribeOn(proxySchedule)
-            .subscribe {
-                val pictureSize = p1?.parameters?.pictureSize
-                Log.i(TAG, "picture size: " + pictureSize.toString())
-                val mat = Mat(
-                    Size(
-                        pictureSize?.width?.toDouble() ?: 1920.toDouble(),
-                        pictureSize?.height?.toDouble() ?: 1080.toDouble()
-                    ), CvType.CV_8U
-                )
-                mat.put(0, 0, p0)
-                val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
-                Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
-                mat.release()
-                SourceManager.corners = processPicture(pic)
-                Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
-                SourceManager.pic = pic
-                (context as Activity).startActivityForResult(
-                    Intent(
-                        context,
-                        CropActivity::class.java
-                    ), REQUEST_CODE
-                )
-                shutted = true;
-                busy = false
-            }
+                .subscribeOn(proxySchedule)
+                .subscribe {
+                    val pictureSize = p1?.parameters?.pictureSize
+                    Log.i(TAG, "picture size: " + pictureSize.toString())
+                    val mat = Mat(Size(pictureSize?.width?.toDouble() ?: 1920.toDouble(),
+                            pictureSize?.height?.toDouble() ?: 1080.toDouble()), CvType.CV_8U)
+                    mat.put(0, 0, p0)
+                    val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
+                    Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
+                    mat.release()
+                    detectEdge(pic);
+                    shutted = true;
+                    busy = false
+                }
     }
-
 
     override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
         if (busy) {

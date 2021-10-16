@@ -8,7 +8,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.processor.Corners
 import com.sample.edgedetection.processor.TAG
 import org.opencv.core.Point
@@ -56,6 +55,7 @@ class PaperRectangle : View {
     }
 
     fun onCornersDetected(corners: Corners) {
+
         ratioX = corners.size.width.div(measuredWidth)
         ratioY = corners.size.height.div(measuredHeight)
         tl = corners.corners[0] ?: Point()
@@ -81,16 +81,20 @@ class PaperRectangle : View {
     }
 
     fun onCorners2Crop(corners: Corners?, size: Size?) {
+        if (size == null){
+            return
+        }
 
         cropMode = true
-        tl = corners?.corners?.get(0) ?: SourceManager.defaultTl
-        tr = corners?.corners?.get(1) ?: SourceManager.defaultTr
-        br = corners?.corners?.get(2) ?: SourceManager.defaultBr
-        bl = corners?.corners?.get(3) ?: SourceManager.defaultBl
+        tl = corners?.corners?.get(0) ?: Point(size.width * 0.1, size.height * 0.1)
+        tr = corners?.corners?.get(1) ?: Point(size.width * 0.9, size.height * 0.1)
+        br = corners?.corners?.get(2) ?: Point(size.width * 0.9, size.height * 0.9)
+        bl = corners?.corners?.get(3) ?: Point(size.width * 0.1, size.height * 0.9)
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         //exclude status bar height
         val statusBarHeight = getStatusBarHeight(context)
+        //exclude navigation bar height
         val navigationBarHeight = getNavigationBarHeight(context)
         ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
         ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight) ?: 1.0

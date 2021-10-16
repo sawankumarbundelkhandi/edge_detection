@@ -20,6 +20,12 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
     private lateinit var mPresenter: CropPresenter
 
     override fun prepare() {
+        /*proceed.setOnClickListener {
+            var path = mPresenter.proceed()
+            setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
+            System.gc()
+            finish()
+        }*/
     }
 
     override fun provideContentViewId(): Int = R.layout.activity_crop

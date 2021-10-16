@@ -45,12 +45,13 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
     private var rotateBitmapCurrentDegree: Int = 0
 
     init {
-        iCropView.getPaperRect().onCorners2Crop(corners, picture?.size())
         val bitmap = Bitmap.createBitmap(picture?.width() ?: 1080, picture?.height()
                 ?: 1920, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(picture, bitmap, true)
         iCropView.getPaper().setImageBitmap(bitmap)
+        iCropView.getPaperRect().onCorners2Crop(corners, picture?.size())
     }
+
     fun addImageToGalleryOldApi(filePath: String,context: Context) {
         if (Build.VERSION.SDK_INT > 28) {
             return
@@ -64,6 +65,7 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
 
         context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
+
     fun addImageToGallery(fileName: String, bitmap: Bitmap, context: Context) {
         //val collection = MediaStore.Images.Media.getContentUri(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         if (Build.VERSION.SDK_INT < 29) {
@@ -178,7 +180,6 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
             rotateBitmap = croppedBitmap;
         }
 
-
         Log.i(TAG, "ROTATEBITMAPDEGREE --> $rotateBitmapDegree")
 
         rotateBitmap = rotateBitmap?.rotateInt(rotateBitmapDegree)
@@ -189,6 +190,36 @@ class CropPresenter(val context: Context, private val iCropView: ICropView.Proxy
 
         enhancedPicture = rotateBitmap
         croppedBitmap = croppedBitmap?.rotateInt(rotateBitmapDegree)
+    }
+
+    fun proceed(): String? {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "please grant write file permission and trya gain", Toast.LENGTH_SHORT).show()
+            return null
+        }
+
+        croppedPicture = cropPicture(picture!!, iCropView.getPaperRect().getCorners2Crop())
+        croppedBitmap = Bitmap.createBitmap(croppedPicture!!.width(), croppedPicture!!.height(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(croppedPicture, croppedBitmap)
+
+        val dir = File(context.cacheDir, IMAGES_DIR)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+
+        val cropPic = croppedBitmap
+        if (null != cropPic) {
+            val file = File.createTempFile("crop_${SystemClock.currentThreadTimeMillis()}", ".jpeg", dir)
+            file.deleteOnExit()
+            val outStream = FileOutputStream(file)
+            cropPic.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+            outStream.flush()
+            outStream.close()
+            cropPic.recycle()
+
+            return file.absolutePath
+        }
+        return null
     }
 
     fun save(): String? {
