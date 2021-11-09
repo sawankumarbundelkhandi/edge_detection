@@ -1,3 +1,12 @@
+## 1.0.7
+
+- Select image for edge detection (Thanks to @henryleunghk for the PR)
+- Scoped storage fix (Thanks to @Yazan99sh for the PR)
+- Migrated android plugin to v2 (Thanks to @TheSuperiorStanislav for the PR)
+- Migrated to kotlin v1.5.31 (Thanks to @TheSuperiorStanislav for the PR)
+- Fix for crash when take picture is called very quickly two times (Thanks to @vmwsree for the PR)
+- Improved scanning on Android (Thanks to @gamalielCastro for the PR)
+
 ## 1.0.6
 
 - Migrated the plugin to Null Safety. (Thanks to @espbee for his repo)

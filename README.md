@@ -21,6 +21,13 @@ Or in text format add the key:
 
 ### Android
 
+The plugin code is written in kotlin 1.5.31 so that same has to be set to the android project of yours for compilation.
+Change the kotlin_version to 1.5.31 in your `android/build.gradle` file.
+
+```
+ext.kotlin_version = '1.5.31'
+```
+
 Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
 
 ```
@@ -35,7 +42,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.0.6
+  edge_detection: ^1.0.7
 ```
 
 ### Add the following imports to your Dart code:
