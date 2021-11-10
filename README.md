@@ -1,12 +1,12 @@
 # edge_detection
 
-A flutter plugin to detect edges of objects, scan paper, detect corner, detect rectangle. It allows cropping of the detected object image and returns the path of the cropped image.
+A flutter plugin to detect edges of objects, scan paper, detect corners, detect rectangles. It allows cropping of the detected object image and returns the path of the cropped image.
 
 ## Usage:
 
 ### iOS
 
-iOS 10.0 of higher is needed to use the plugin. If compiling for any version lower than 10.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 10 (or higher) in your `ios/Podfile` file.
+iOS 10.0 or higher is needed to use the plugin. If compiling for any version lower than 10.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 10 (or higher) in your `ios/Podfile` file.
 
 Add below permission to the `ios/Runner/Info.plist`:
 
@@ -21,14 +21,14 @@ Or in text format add the key:
 
 ### Android
 
-The plugin code is written in kotlin 1.5.31 so that same has to be set to the android project of yours for compilation.
+The plugin code is written in kotlin 1.5.31 so the same has to be set to the android project of yours for compilation.
 Change the kotlin_version to 1.5.31 in your `android/build.gradle` file.
 
 ```
 ext.kotlin_version = '1.5.31'
 ```
 
-Change the minimum Android sdk version to 21 (or higher) in your `android/app/build.gradle` file.
+Change the minimum Android SDK version to 21 (or higher) in your `android/app/build.gradle` file.
 
 ```
 minSdkVersion 21
