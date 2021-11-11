@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.sample.edgedetection.R
@@ -34,6 +35,11 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
     override fun initPresenter() {
         mPresenter = CropPresenter(this, this)
+        findViewById<ImageView>(R.id.crop).setOnClickListener {
+            Log.e(TAG, "Crop touched!")
+            mPresenter.crop()
+            changeMenuVisibility(true)
+        }
     }
 
     override fun getPaper(): ImageView = paper
@@ -50,10 +56,11 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         menu.findItem(R.id.rotation_image).isVisible = showMenuItems
 
         if (showMenuItems) {
-            menu.findItem(R.id.action_label)
-                    .setTitle(applicationContext.getString(R.string.done)).icon = AppCompatResources.getDrawable(
-                    applicationContext, R.drawable.ic_done
-            )
+            menu.findItem(R.id.action_label).isVisible = true
+            findViewById<ImageView>(R.id.crop).visibility = View.GONE
+        } else {
+            menu.findItem(R.id.action_label).isVisible = false
+            findViewById<ImageView>(R.id.crop).visibility = View.VISIBLE
         }
 
         return super.onCreateOptionsMenu(menu)
@@ -75,12 +82,6 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
         if (item.itemId == R.id.action_label) {
             Log.e(TAG, item.title.toString())
-            if (item.title == applicationContext.getString(R.string.crop)) {
-                Log.e(TAG, "Crop touched!")
-                mPresenter.crop()
-                changeMenuVisibility(true)
-                return true
-            }
 
             if (item.title == applicationContext.getString(R.string.done)) {
                 Log.e(TAG, "Saved touched!")
