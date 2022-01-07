@@ -81,7 +81,7 @@ class PaperRectangle : View {
         invalidate()
     }
 
-    fun onCorners2Crop(corners: Corners?, size: Size?) {
+    fun onCorners2Crop(corners: Corners?, size: Size?, paperWidth : Int, paperHeight : Int) {
         if (size == null) {
             return
         }
@@ -91,15 +91,8 @@ class PaperRectangle : View {
         tr = corners?.corners?.get(1) ?: Point(size.width * 0.9, size.height * 0.1)
         br = corners?.corners?.get(2) ?: Point(size.width * 0.9, size.height * 0.9)
         bl = corners?.corners?.get(3) ?: Point(size.width * 0.1, size.height * 0.9)
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        //exclude status bar height
-        val statusBarHeight = getStatusBarHeight(context)
-        //exclude navigation bar height
-        val navigationBarHeight = getNavigationBarHeight(context)
-        ratioX = size?.width?.div(displayMetrics.widthPixels) ?: 1.0
-        ratioY = size?.height?.div(displayMetrics.heightPixels - statusBarHeight - navigationBarHeight)
-                ?: 1.0
+        ratioX = size?.width?.div(paperWidth) ?: 1.0
+        ratioY = size?.height?.div(paperHeight) ?: 1.0
         resize()
         movePoints()
     }
@@ -189,21 +182,5 @@ class PaperRectangle : View {
         br.y = br.y.times(ratioY)
         bl.x = bl.x.times(ratioX)
         bl.y = bl.y.times(ratioY)
-    }
-
-    private fun getNavigationBarHeight(pContext: Context): Int {
-        val resources = pContext.resources
-        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else 0
-    }
-
-    private fun getStatusBarHeight(pContext: Context): Int {
-        val resources = pContext.resources
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else 0
     }
 }

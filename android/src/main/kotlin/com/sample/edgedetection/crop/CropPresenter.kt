@@ -40,12 +40,12 @@ class CropPresenter(private val context: Context, private val iCropView: ICropVi
     private var rotateBitmap: Bitmap? = null
     private var rotateBitmapDegree: Int = -90
 
-    init {
+    fun onViewsReady(paperWidth : Int, paperHeight : Int) {
+        iCropView.getPaperRect().onCorners2Crop(corners, picture?.size(), paperWidth, paperHeight)
         val bitmap = Bitmap.createBitmap(picture?.width() ?: 1080, picture?.height()
                 ?: 1920, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(picture, bitmap, true)
         iCropView.getPaper().setImageBitmap(bitmap)
-        iCropView.getPaperRect().onCorners2Crop(corners, picture?.size())
     }
 
     private fun addImageToGalleryOldApi(filePath: String, context: Context) {
