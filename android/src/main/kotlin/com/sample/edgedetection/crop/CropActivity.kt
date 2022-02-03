@@ -2,6 +2,7 @@ package com.sample.edgedetection.crop
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -27,6 +28,14 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
             System.gc()
             finish()
         }*/
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        paper.post {
+            //we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
+            mPresenter.onViewsReady(paper.width, paper.height)
+        }
     }
 
     override fun provideContentViewId(): Int = R.layout.activity_crop
