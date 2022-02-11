@@ -38,7 +38,6 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             imagePicker.sourceType = .photoLibrary
-            imagePicker.modalPresentationStyle = .fullScreen
             
             present(imagePicker, animated: true)
         }

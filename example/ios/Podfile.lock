@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  edge_detection: 8265d03466a9c441d6c282fdad7a6594d5f684c4
+  edge_detection: 309aac25ae437aa7764e4f7dc8b741ffb7444503
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   WeScan: fed582f6c38014d529afb5aa9ffd1bad38fc72b7
 
