@@ -2,32 +2,19 @@ import WeScan
 import Flutter
 import Foundation
 
-class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, ImageScannerControllerDelegate {
-    func captureImageFailWithError(error: Error) {
-        print(error)
-    }
-    
-    func captureImageSuccess(image: UIImage, withQuad quad: Quadrilateral?) {
-        cameraController?.dismiss(animated: true)
-        
-        hideButtons()
-        let scannerVC = ImageScannerController(image: image, delegate: self)
-        if #available(iOS 13.0, *) {
-            scannerVC.isModalInPresentation = true
-        }
-        present(scannerVC, animated: true)
-    }
-    
-    
-    var cameraController: CameraScannerViewController!
+class HomeViewController: UIViewController, ImageScannerControllerDelegate {
+
+    var cameraController: ImageScannerController!
     var _result:FlutterResult?
     
     override func viewDidAppear(_ animated: Bool) {
         if self.isBeingPresented {
-            cameraController = CameraScannerViewController()
-            cameraController.delegate = self
+            cameraController = ImageScannerController()
+            cameraController.imageScannerDelegate = self
+
             if #available(iOS 13.0, *) {
                 cameraController.isModalInPresentation = true
+                cameraController.overrideUserInterfaceStyle = .dark
             }
             
             // Temp fix for https://github.com/WeTransfer/WeScan/issues/320
@@ -56,6 +43,12 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
                 }
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        cancelButton.isHidden = false
+        selectPhotoButton.isHidden = false
+        shutterButton.isHidden = false
     }
     
     private lazy var shutterButton: ShutterButton = {
@@ -95,7 +88,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
     
     @objc private func captureImage(_ sender: UIButton) {
         shutterButton.isUserInteractionEnabled = false
-        cameraController?.capture()
+        hideButtons()
     }
     
     @objc func selectPhoto() {
@@ -107,6 +100,7 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
             scanPhotoVC._result = _result
             if #available(iOS 13.0, *) {
                 scanPhotoVC.isModalInPresentation = true
+                scanPhotoVC.overrideUserInterfaceStyle = .dark
             }
             window.rootViewController?.present(scanPhotoVC, animated: true)
         }
@@ -233,3 +227,4 @@ class HomeViewController: UIViewController, CameraScannerViewOutputDelegate, Ima
         return randomString
     }
 }
+

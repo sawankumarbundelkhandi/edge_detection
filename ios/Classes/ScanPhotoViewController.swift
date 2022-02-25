@@ -26,13 +26,32 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         guard let image = info[.originalImage] as? UIImage else { return }
         let scannerVC = ImageScannerController(image: image)
         scannerVC.imageScannerDelegate = self
+        
         if #available(iOS 13.0, *) {
             scannerVC.isModalInPresentation = true
+            scannerVC.overrideUserInterfaceStyle = .dark
         }
         present(scannerVC, animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
+        // Temp fix for https://github.com/WeTransfer/WeScan/issues/320
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            let navigationBar = UINavigationBar()
+            appearance.configureWithOpaqueBackground()
+            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+            appearance.backgroundColor = .systemBackground
+            navigationBar.standardAppearance = appearance;
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            
+            let appearanceTB = UITabBarAppearance()
+            appearanceTB.configureWithOpaqueBackground()
+            appearanceTB.backgroundColor = .systemBackground
+            UITabBar.appearance().standardAppearance = appearanceTB
+            UITabBar.appearance().scrollEdgeAppearance = appearanceTB
+        }
         
         if self.isBeingPresented {
             let imagePicker = UIImagePickerController()
