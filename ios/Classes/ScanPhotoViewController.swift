@@ -30,6 +30,7 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         if #available(iOS 13.0, *) {
             scannerVC.isModalInPresentation = true
             scannerVC.overrideUserInterfaceStyle = .dark
+            scannerVC.view.backgroundColor = .black
         }
         present(scannerVC, animated: true)
     }
