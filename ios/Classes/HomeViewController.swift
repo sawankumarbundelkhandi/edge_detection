@@ -15,6 +15,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
             if #available(iOS 13.0, *) {
                 cameraController.isModalInPresentation = true
                 cameraController.overrideUserInterfaceStyle = .dark
+                cameraController.view.backgroundColor = .black
             }
             
             // Temp fix for https://github.com/WeTransfer/WeScan/issues/320
