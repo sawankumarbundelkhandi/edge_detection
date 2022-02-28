@@ -1,3 +1,8 @@
+## 1.0.8
+
+- Fix for wrong edge detection because of navigation bar (Thanks to @DanicMa for the PR)
+- iOS review screen fix (Thanks to @cansavrun for the PR)
+
 ## 1.0.7
 
 - Select image for edge detection (Thanks to @henryleunghk for the PR)
