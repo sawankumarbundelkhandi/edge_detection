@@ -1,5 +1,5 @@
 PODS:
-  - edge_detection (1.0.8):
+  - edge_detection (1.0.9):
     - Flutter
     - WeScan
   - Flutter (1.0.0)

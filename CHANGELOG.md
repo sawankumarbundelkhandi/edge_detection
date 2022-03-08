@@ -1,3 +1,7 @@
+## 1.0.9
+
+- Fix for plugin not working on Android because of link error.
+
 ## 1.0.8
 
 - Fix for wrong edge detection because of navigation bar (Thanks to @DanicMa for the PR)
