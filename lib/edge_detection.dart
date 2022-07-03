@@ -9,4 +9,8 @@ class EdgeDetection {
     final String? imagePath = await _channel.invokeMethod('edge_detect');
     return imagePath;
   }
+  static Future<String?> get detectEdgeFromGallery async {
+    final String? imagePath = await _channel.invokeMethod('edge_detect_gallery');
+    return imagePath;
+  }
 }
