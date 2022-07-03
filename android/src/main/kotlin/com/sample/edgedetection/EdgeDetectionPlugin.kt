@@ -58,6 +58,9 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             call.method.equals("edge_detect") -> {
                 openCameraActivity(call, result)
             }
+            call.method.equals("edge_detect_gallery") -> {
+                openGalleryActivity(call, result)
+            }
             else -> {
                 result.notImplemented()
             }
@@ -90,6 +93,16 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
         }
 
         val intent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+        getActivity()?.startActivityForResult(intent, REQUEST_CODE)
+    }
+    
+    private fun openGalleryActivity(call: MethodCall, result: Result) {
+        if (!setPendingMethodCallAndResult(call, result)) {
+            finishWithAlreadyActiveError()
+            return
+        }
+        val intent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+        intent.putExtra("from_gallery", true)
         getActivity()?.startActivityForResult(intent, REQUEST_CODE)
     }
 
