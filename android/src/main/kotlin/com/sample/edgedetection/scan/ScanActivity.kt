@@ -95,9 +95,18 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
 
         gallery.setOnClickListener {
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            ActivityCompat.startActivityForResult(this, gallery, 1, null);
+            pickupFromGallery()
         };
+
+        if(intent.hasExtra("from_gallery") && intent.getBooleanExtra("from_gallery", false)){
+            pickupFromGallery()
+        }
+    }
+
+    fun pickupFromGallery(){
+        mPresenter.stop()
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        ActivityCompat.startActivityForResult(this, gallery, 1, null);
     }
 
 

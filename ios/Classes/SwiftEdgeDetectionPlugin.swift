@@ -21,5 +21,14 @@ public class SwiftEdgeDetectionPlugin: NSObject, FlutterPlugin, UIApplicationDel
                 viewController.present(destinationViewController,animated: true,completion: nil);
             }
         }
+        if (call.method == "edge_detect_gallery")
+        {
+            if let viewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController {
+                let destinationViewController = HomeViewController()
+                destinationViewController._result = result
+                destinationViewController.selectPhoto()
+                viewController.present(destinationViewController,animated: true,completion: nil);
+            }
+        }
     }
 }
