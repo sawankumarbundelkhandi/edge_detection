@@ -102,7 +102,7 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             return
         }
         val intent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
-        intent.putExtra("from_gallery", true)
+        intent.putExtra(ScanActivity.FROM_GALLERY, true)
         getActivity()?.startActivityForResult(intent, REQUEST_CODE)
     }
 
