@@ -40,6 +40,10 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
     override fun provideContentViewId(): Int = R.layout.activity_scan
 
+    companion object{
+        public const val FROM_GALLERY = "from_gallery"
+    }
+
     override fun initPresenter() {
         mPresenter = ScanPresenter(this, this)
     }
@@ -98,7 +102,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             pickupFromGallery()
         };
 
-        if(intent.hasExtra("from_gallery") && intent.getBooleanExtra("from_gallery", false)){
+        if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false)){
             pickupFromGallery()
         }
     }
@@ -187,13 +191,21 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                     setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
                     finish()
                 }
+            }else{
+                if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false))
+                    finish()
             }
         }
 
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            val uri: Uri = data!!.data!!
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                onImageSelected(uri)
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                val uri: Uri = data!!.data!!
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    onImageSelected(uri)
+                }
+            }else{
+                if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false))
+                    finish()
             }
         }
     }

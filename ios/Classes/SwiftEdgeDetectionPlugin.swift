@@ -26,8 +26,7 @@ public class SwiftEdgeDetectionPlugin: NSObject, FlutterPlugin, UIApplicationDel
             if let viewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController {
                 let destinationViewController = HomeViewController()
                 destinationViewController._result = result
-                destinationViewController.selectPhoto()
-                viewController.present(destinationViewController,animated: true,completion: nil);
+                destinationViewController.selectPhoto();
             }
         }
     }
