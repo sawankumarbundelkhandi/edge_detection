@@ -1,10 +1,8 @@
 package com.sample.edgedetection.view
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -19,9 +17,9 @@ class PaperRectangle : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes)
     constructor(context: Context, attributes: AttributeSet, defTheme: Int) : super(
-            context,
-            attributes,
-            defTheme
+        context,
+        attributes,
+        defTheme
     )
 
     private val rectPaint = Paint()
@@ -59,12 +57,28 @@ class PaperRectangle : View {
 
         ratioX = corners.size.width.div(measuredWidth)
         ratioY = corners.size.height.div(measuredHeight)
+
+        for (i in 0..3) {
+            for (j in i + 1..3) {
+                if (corners.corners[i]?.equals(corners.corners[j]) == true) {
+                    resize()
+                    path.reset()
+                    path.close()
+                    invalidate()
+                    return
+                }
+            }
+        }
+
         tl = corners.corners[0] ?: Point()
         tr = corners.corners[1] ?: Point()
         br = corners.corners[2] ?: Point()
         bl = corners.corners[3] ?: Point()
 
-        Log.i(TAG, "POINTS ------>  $tl corners")
+        Log.i(TAG, "POINTS tl ------>  $tl corners")
+        Log.i(TAG, "POINTS tr ------>  $tr corners")
+        Log.i(TAG, "POINTS br ------>  $br corners")
+        Log.i(TAG, "POINTS bl ------>  $bl corners")
 
         resize()
         path.reset()
@@ -81,7 +95,7 @@ class PaperRectangle : View {
         invalidate()
     }
 
-    fun onCorners2Crop(corners: Corners?, size: Size?, paperWidth : Int, paperHeight : Int) {
+    fun onCorners2Crop(corners: Corners?, size: Size?, paperWidth: Int, paperHeight: Int) {
         if (size == null) {
             return
         }
@@ -148,7 +162,7 @@ class PaperRectangle : View {
     private fun calculatePoint2Move(downX: Float, downY: Float) {
         val points = listOf(tl, tr, br, bl)
         point2Move = points.minByOrNull { abs((it.x - downX).times(it.y - downY)) }
-                ?: tl
+            ?: tl
     }
 
     private fun movePoints() {

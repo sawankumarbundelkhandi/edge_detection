@@ -1,16 +1,14 @@
 package com.sample.edgedetection.crop
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
+import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
-import com.sample.edgedetection.SCANNED_RESULT
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
 import kotlinx.android.synthetic.main.activity_crop.*
@@ -22,13 +20,11 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
     private lateinit var mPresenter: CropPresenter
 
+    private lateinit var initialBundle: Bundle;
+
     override fun prepare() {
-        /*proceed.setOnClickListener {
-            var path = mPresenter.proceed()
-            setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
-            System.gc()
-            finish()
-        }*/
+        this.initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+        this.title = initialBundle.getString(EdgeDetectionHandler.CROP_TITLE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +39,8 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
 
     override fun initPresenter() {
-        mPresenter = CropPresenter(this, this)
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+        mPresenter = CropPresenter(this, this, initialBundle)
         findViewById<ImageView>(R.id.crop).setOnClickListener {
             Log.e(TAG, "Crop touched!")
             mPresenter.crop()
@@ -63,6 +60,11 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         menu.setGroupVisible(R.id.enhance_group, showMenuItems)
 
         menu.findItem(R.id.rotation_image).isVisible = showMenuItems
+
+        menu.findItem(R.id.gray).title =
+            initialBundle.getString(EdgeDetectionHandler.CROP_BLACK_WHITE_TITLE) as String
+        menu.findItem(R.id.reset).title =
+            initialBundle.getString(EdgeDetectionHandler.CROP_RESET_TITLE) as String
 
         if (showMenuItems) {
             menu.findItem(R.id.action_label).isVisible = true
@@ -90,33 +92,21 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         }
 
         if (item.itemId == R.id.action_label) {
-            Log.e(TAG, item.title.toString())
-
-            if (item.title == applicationContext.getString(R.string.done)) {
-                Log.e(TAG, "Saved touched!")
-                val path = mPresenter.save()
-                Log.e(TAG, "Saved touched! $path")
-                setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
-                System.gc()
-                finish()
-                return true
-            }
-        }
-
-        if (item.title == applicationContext.getString(R.string.rotate)) {
+            Log.e(TAG, "Saved touched!")
+            mPresenter.save()
+            setResult(Activity.RESULT_OK)
+            System.gc()
+            finish()
+            return true
+        } else if (item.itemId == R.id.rotation_image) {
             Log.e(TAG, "Rotate touched!")
             mPresenter.rotate()
             return true
-        }
-
-
-        if (item.title == applicationContext.getString(R.string.black)) {
+        } else if (item.itemId == R.id.gray) {
             Log.e(TAG, "Black White touched!")
             mPresenter.enhance()
             return true
-        }
-
-        if (item.title == applicationContext.getString(R.string.reset)) {
+        } else if (item.itemId == R.id.reset) {
             Log.e(TAG, "Reset touched!")
             mPresenter.reset()
             return true

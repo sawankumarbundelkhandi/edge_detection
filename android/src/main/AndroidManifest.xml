@@ -2,7 +2,11 @@
     package="com.sample.edgedetection">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <permission
+        android:name="android.permission.FLASHLIGHT"
+        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+        android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
@@ -11,12 +15,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".scan.ScanActivity"
-            android:label="@string/scan"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".crop.CropActivity"
-            android:label="@string/crop"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
     </application>

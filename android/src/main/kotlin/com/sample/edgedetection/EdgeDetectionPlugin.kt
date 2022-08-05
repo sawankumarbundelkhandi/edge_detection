@@ -2,6 +2,7 @@ package com.sample.edgedetection
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import com.sample.edgedetection.scan.ScanActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -19,7 +20,7 @@ class EdgeDetectionPlugin : FlutterPlugin, ActivityAware {
     override fun onAttachedToEngine(binding: FlutterPluginBinding) {
         handler = EdgeDetectionHandler()
         val channel = MethodChannel(
-                binding.binaryMessenger, "edge_detection"
+            binding.binaryMessenger, "edge_detection"
         )
         channel.setMethodCallHandler(handler)
     }
@@ -40,6 +41,17 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
     private var result: Result? = null
     private var methodCall: MethodCall? = null
 
+    companion object {
+        public const val INITIAL_BUNDLE = "initial_bundle"
+        public const val FROM_GALLERY = "from_gallery"
+        public const val SAVE_TO = "save_to"
+        public const val CAN_USE_GALLERY = "can_use_gallery"
+        public const val SCAN_TITLE = "scan_title"
+        public const val CROP_TITLE = "crop_title"
+        public const val CROP_BLACK_WHITE_TITLE = "crop_black_white_title"
+        public const val CROP_RESET_TITLE = "crop_reset_title"
+    }
+
     fun setActivityPluginBinding(activityPluginBinding: ActivityPluginBinding) {
         activityPluginBinding.addActivityResultListener(this)
         this.activityPluginBinding = activityPluginBinding
@@ -49,9 +61,9 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
         when {
             getActivity() == null -> {
                 result.error(
-                        "no_activity",
-                        "edge_detection plugin requires a foreground activity.",
-                        null
+                    "no_activity",
+                    "edge_detection plugin requires a foreground activity.",
+                    null
                 )
                 return
             }
@@ -74,12 +86,9 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (null != data && null != data.extras) {
-                    val filePath = data.extras!!.getString(SCANNED_RESULT)
-                    finishWithSuccess(filePath)
-                }
+                finishWithSuccess(true)
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                finishWithSuccess(null)
+                finishWithSuccess(false)
             }
             return true
         }
@@ -92,23 +101,45 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             return
         }
 
-        val intent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
-        getActivity()?.startActivityForResult(intent, REQUEST_CODE)
+        val initialIntent =
+            Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+        val bundle = Bundle();
+        bundle.putString(SAVE_TO, call.argument<String>(SAVE_TO) as String)
+        bundle.putString(SCAN_TITLE, call.argument<String>(SCAN_TITLE) as String)
+        bundle.putString(CROP_TITLE, call.argument<String>(CROP_TITLE) as String)
+        bundle.putString(
+            CROP_BLACK_WHITE_TITLE,
+            call.argument<String>(CROP_BLACK_WHITE_TITLE) as String
+        )
+        bundle.putString(CROP_RESET_TITLE, call.argument<String>(CROP_RESET_TITLE) as String)
+        bundle.putBoolean(CAN_USE_GALLERY, call.argument<Boolean>(CAN_USE_GALLERY) as Boolean)
+        initialIntent.putExtra(INITIAL_BUNDLE, bundle)
+        getActivity()?.startActivityForResult(initialIntent, REQUEST_CODE)
     }
-    
+
     private fun openGalleryActivity(call: MethodCall, result: Result) {
         if (!setPendingMethodCallAndResult(call, result)) {
             finishWithAlreadyActiveError()
             return
         }
-        val intent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
-        intent.putExtra(ScanActivity.FROM_GALLERY, true)
-        getActivity()?.startActivityForResult(intent, REQUEST_CODE)
+        val initialIntent =
+            Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+        val bundle = Bundle();
+        bundle.putString(SAVE_TO, call.argument<String>(SAVE_TO) as String)
+        bundle.putString(CROP_TITLE, call.argument<String>(CROP_TITLE) as String)
+        bundle.putString(
+            CROP_BLACK_WHITE_TITLE,
+            call.argument<String>(CROP_BLACK_WHITE_TITLE) as String
+        )
+        bundle.putString(CROP_RESET_TITLE, call.argument<String>(CROP_RESET_TITLE) as String)
+        bundle.putBoolean(FROM_GALLERY, call.argument<Boolean>(FROM_GALLERY) as Boolean)
+        initialIntent.putExtra(INITIAL_BUNDLE, bundle)
+        getActivity()?.startActivityForResult(initialIntent, REQUEST_CODE)
     }
 
     private fun setPendingMethodCallAndResult(
-            methodCall: MethodCall,
-            result: Result
+        methodCall: MethodCall,
+        result: Result
     ): Boolean {
         if (this.result != null) {
             return false
@@ -127,8 +158,8 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
         clearMethodCallAndResult()
     }
 
-    private fun finishWithSuccess(imagePath: String?) {
-        result?.success(imagePath)
+    private fun finishWithSuccess(res: Boolean) {
+        result?.success(res)
         clearMethodCallAndResult()
     }
 
