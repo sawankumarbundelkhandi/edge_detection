@@ -83,7 +83,7 @@ final class ShutterButton: UIControl {
     private func pathForOutterRing(inRect rect: CGRect) -> UIBezierPath {
         let path = UIBezierPath(ovalIn: rect)
         
-        let innerRect = rect//.scaleAndCenter(withRatio: outterRingRatio)
+        let innerRect = scaleAndCenter(rect: rect, ratio: outterRingRatio)
         let innerPath = UIBezierPath(ovalIn: innerRect).reversing()
         
         path.append(innerPath)
@@ -92,9 +92,20 @@ final class ShutterButton: UIControl {
     }
     
     private func pathForInnerCircle(inRect rect: CGRect) -> UIBezierPath {
-        let rect = rect//.scaleAndCenter(withRatio: innerRingRatio)
+        let rect = scaleAndCenter(rect: rect, ratio: innerRingRatio)
         let path = UIBezierPath(ovalIn: rect)
         
         return path
     }
+    
+    private func scaleAndCenter(rect: CGRect, ratio: CGFloat) -> CGRect {
+        let scaleTransform = CGAffineTransform(scaleX: ratio, y: ratio)
+        let scaledRect = rect.applying(scaleTransform)
+        
+        let translateTransform = CGAffineTransform(translationX: rect.minX * (1 - ratio) + (rect.width - scaledRect.width) / 2.0, y: rect.minY * (1 - ratio) + (rect.height - scaledRect.height) / 2.0)
+        let translatedRect = scaledRect.applying(translateTransform)
+        
+        return translatedRect
+    }
+    
 }

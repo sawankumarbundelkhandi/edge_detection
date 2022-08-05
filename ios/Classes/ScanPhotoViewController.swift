@@ -15,8 +15,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
-        _result!(nil)
         
+        _result!(false)
         dismiss(animated: true)
     }
     
@@ -65,7 +65,7 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
     
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         print(error)
-        _result!(nil)
+        _result!(false)
         self.dismiss(animated: true)
     }
     
@@ -74,8 +74,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         scanner.dismiss(animated: true)
         
         
-        let imagePath = saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
-        _result!(imagePath)
+        saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
+        _result!(true)
         self.dismiss(animated: true)
     }
     
@@ -83,7 +83,7 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
         // Your ViewController is responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
-        _result!(nil)
+        _result!(false)
         self.dismiss(animated: true)
     }
     
