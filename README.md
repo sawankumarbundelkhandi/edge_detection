@@ -19,6 +19,8 @@ Or in text format add the key:
 <string>Can I use the camera please?</string>
 ```
 
+Add to your need localizations to your app through XCode for localize actions buttons from WeScan (https://github.com/WeTransfer/WeScan/tree/master/WeScan/Resources/Localisation)
+
 ### Android
 
 The plugin code is written in kotlin 1.5.31 so the same has to be set to the android project of yours for compilation.
@@ -42,7 +44,10 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.0.9
+  edge_detection: ^1.1.0
+  permission_handler: ^10.0.0
+  path_provider: ^2.0.11
+  path: ^1.8.2
 ```
 
 ### Add the following imports to your Dart code:
@@ -52,17 +57,35 @@ import 'package:edge_detection/edge_detection.dart';
 ```
 
 ```dart
+// Check permissions and request its
+bool isCameraGranted = await Permission.camera.request().isGranted;
+if (!isCameraGranted) {
+    isCameraGranted = await Permission.camera.request() == PermissionStatus.granted;
+}
 
-//Make sure to await the call to detectEdge.
-String imagePath = await EdgeDetection.detectEdge;
+if (!isCameraGranted) {
+    // Have not permission to camera
+    return;
+}
+
+// Generate filepath for saving
+String imagePath = join((await getApplicationSupportDirectory()).path,
+    "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
+        
+try {
+    //Make sure to await the call to detectEdge.
+    bool success = await EdgeDetection.detectEdge(imagePath,
+        canUseGallery: false,
+        androidScanTitle: 'Сканирование', // use custom localizations for android
+        androidCropTitle: 'Редактирование',
+        androidCropBlackWhiteTitle: 'Ч/Б',
+        androidCropReset: 'Отменить',
+    );
+} catch (e) {
+    print(e);
+}
 
 ```
-
-## Demo
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
-</p>
 
 ## Screenshots
 
@@ -72,16 +95,13 @@ String imagePath = await EdgeDetection.detectEdge;
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/1.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/1.png" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/2.png" width="200" />
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/2.png" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/3.png" width="200"/>
-         </td>
-         <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/4.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/3.png" width="200"/>
          </td>
       </tr>
    </table>
@@ -93,16 +113,13 @@ String imagePath = await EdgeDetection.detectEdge;
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/1.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/1.PNG" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/2.PNG" width="200" />
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/2.PNG" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/3.PNG" width="200"/>
-         </td>
-         <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/4.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/3.PNG" width="200"/>
          </td>
       </tr>
    </table>
