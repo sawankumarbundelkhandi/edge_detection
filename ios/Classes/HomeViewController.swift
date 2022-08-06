@@ -7,6 +7,9 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
     var cameraController: ImageScannerController!
     var _result:FlutterResult?
     
+    var saveTo: String = ""
+    var canUseGallery: Bool = true
+    
     override func viewDidAppear(_ animated: Bool) {
         if self.isBeingPresented {
             cameraController = ImageScannerController()
@@ -38,8 +41,6 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
             present(cameraController, animated: true) {
                 if let window = UIApplication.shared.keyWindow {
                     window.addSubview(self.selectPhotoButton)
-                    window.addSubview(self.shutterButton)
-                    window.addSubview(self.cancelButton)
                     self.setupConstraints()
                 }
             }
@@ -47,26 +48,10 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        cancelButton.isHidden = false
-        selectPhotoButton.isHidden = false
-        shutterButton.isHidden = false
+        if (canUseGallery == true) {
+            selectPhotoButton.isHidden = false
+        }
     }
-    
-    private lazy var shutterButton: ShutterButton = {
-        let button = ShutterButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    
-    private lazy var cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(NSLocalizedString("wescan.scanning.cancel", tableName: nil, bundle: Bundle(for: ScannerViewController.self), value: "Cancel", comment: "The cancel button"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(cancelImageScannerController), for: .touchUpInside)
-        return button
-    }()
     
     lazy var selectPhotoButton: UIButton = {
         let button = UIButton()
@@ -74,6 +59,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         button.tintColor = UIColor.white
         button.addTarget(self, action: #selector(selectPhoto), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
         return button
     }()
     
@@ -81,15 +67,10 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
     
     @objc private func cancelImageScannerController() {
         hideButtons()
-        _result!(nil)
         
+        _result!(false)
         cameraController?.dismiss(animated: true)
         dismiss(animated: true)
-    }
-    
-    @objc private func captureImage(_ sender: UIButton) {
-        shutterButton.isUserInteractionEnabled = false
-        hideButtons()
     }
     
     @objc func selectPhoto() {
@@ -108,19 +89,11 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
     }
     
     func hideButtons() {
-        cancelButton.isHidden = true
         selectPhotoButton.isHidden = true
-        shutterButton.isHidden = true
     }
     
     private func setupConstraints() {
-        var cancelButtonConstraints = [NSLayoutConstraint]()
         var selectPhotoButtonConstraints = [NSLayoutConstraint]()
-        var shutterButtonConstraints = [
-            shutterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            shutterButton.widthAnchor.constraint(equalToConstant: 65.0),
-            shutterButton.heightAnchor.constraint(equalToConstant: 65.0)
-        ]
         
         if #available(iOS 11.0, *) {
             selectPhotoButtonConstraints = [
@@ -129,13 +102,6 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
                 selectPhotoButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -24.0),
                 view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
             ]
-            cancelButtonConstraints = [
-                cancelButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 24.0),
-                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
-            ]
-            
-            let shutterButtonBottomConstraint = view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: shutterButton.bottomAnchor, constant: 8.0)
-            shutterButtonConstraints.append(shutterButtonBottomConstraint)
         } else {
             selectPhotoButtonConstraints = [
                 selectPhotoButton.widthAnchor.constraint(equalToConstant: 44.0),
@@ -143,20 +109,18 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
                 selectPhotoButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -24.0),
                 view.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
             ]
-            cancelButtonConstraints = [
-                cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 24.0),
-                view.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
-            ]
-            
-            let shutterButtonBottomConstraint = view.bottomAnchor.constraint(equalTo: shutterButton.bottomAnchor, constant: 8.0)
-            shutterButtonConstraints.append(shutterButtonBottomConstraint)
         }
-        NSLayoutConstraint.activate(selectPhotoButtonConstraints + cancelButtonConstraints + shutterButtonConstraints)
+        NSLayoutConstraint.activate(selectPhotoButtonConstraints)
+    }
+    
+    func setParams(saveTo: String, canUseGallery: Bool) {
+        self.saveTo = saveTo
+        self.canUseGallery = canUseGallery
     }
     
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         print(error)
-        _result!(nil)
+        _result!(false)
         self.hideButtons()
         self.dismiss(animated: true)
     }
@@ -166,8 +130,8 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         scanner.dismiss(animated: true)
         self.hideButtons()
         
-        let imagePath = saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
-        _result!(imagePath)
+        saveImage(image:results.doesUserPreferEnhancedScan ? results.enhancedScan!.image : results.croppedScan.image)
+        _result!(true)
         self.dismiss(animated: true)
     }
     
@@ -176,22 +140,19 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         scanner.dismiss(animated: true)
         self.hideButtons()
         
-        _result!(nil)
+        _result!(false)
         self.dismiss(animated: true)
     }
     
-    func saveImage(image: UIImage) -> String? {
+    func saveImage(image: UIImage) -> Bool? {
         
         guard let data = image.jpegData(compressionQuality: 1) ?? image.pngData() else {
-            return nil
+            return false
         }
         
-        guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
-            return nil
-        }
+        let path : String = "file://" + self.saveTo.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)!
+        let filePath: URL = URL.init(string: path)!
         
-        let fileName = randomString(length:10);
-        let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
         do {
             let fileManager = FileManager.default
             // Check if file exists
@@ -206,26 +167,16 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         catch let error as NSError {
             print("An error took place: \(error)")
         }
+        
         do {
             try data.write(to: filePath)
-            return filePath.path
+            return true
         }
+        
         catch {
             print(error.localizedDescription)
-            return nil
+            return false
         }
-    }
-    
-    func randomString(length: Int) -> String {
-        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        let len = UInt32(letters.length)
-        var randomString = ""
-        for _ in 0 ..< length {
-            let rand = arc4random_uniform(len)
-            var nextChar = letters.character(at: Int(rand))
-            randomString += NSString(characters: &nextChar, length: 1) as String
-        }
-        return randomString
     }
 }
 

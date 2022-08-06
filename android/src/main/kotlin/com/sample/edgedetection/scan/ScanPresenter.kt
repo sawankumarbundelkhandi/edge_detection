@@ -9,14 +9,17 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.YuvImage
 import android.hardware.Camera
+import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.params.StreamConfigurationMap
+import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.Display
 import android.view.SurfaceHolder
 import android.widget.Toast
+import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.REQUEST_CODE
 import com.sample.edgedetection.SourceManager
 import com.sample.edgedetection.crop.CropActivity
@@ -41,8 +44,12 @@ import kotlin.math.max
 import kotlin.math.min
 import android.util.Size as SizeB
 
-class ScanPresenter constructor(private val context: Context, private val iView: IScanView.Proxy) :
-        SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
+class ScanPresenter constructor(
+    private val context: Context,
+    private val iView: IScanView.Proxy,
+    private val initialBundle: Bundle
+) :
+    SurfaceHolder.Callback, Camera.PictureCallback, Camera.PreviewCallback {
     private val TAG: String = "ScanPresenter"
     private var mCamera: Camera? = null
     private val mSurfaceHolder: SurfaceHolder = iView.getSurfaceView().holder
@@ -50,6 +57,7 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
     private var mCameraLensFacing: String? = null
+    private var flashEnabled: Boolean = false;
 
     private var mLastClickTime = 0L
     private var shutted: Boolean = true
@@ -69,7 +77,6 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     }
 
     fun start() {
-
         mCamera?.startPreview() ?: Log.i(TAG, "camera null")
     }
 
@@ -96,6 +103,19 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
     }
 
+    fun toggleFlash() {
+        try {
+            flashEnabled = !flashEnabled;
+            val parameters = mCamera?.parameters;
+            parameters?.flashMode =
+                if (flashEnabled) Camera.Parameters.FLASH_MODE_TORCH else Camera.Parameters.FLASH_MODE_OFF
+            mCamera?.setParameters(parameters);
+            mCamera?.startPreview();
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+    }
+
     fun updateCamera() {
         if (null == mCamera) {
             return
@@ -119,7 +139,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
     private fun getBackFacingCameraId(): String? {
         for (camID in cameraManager.cameraIdList) {
-            val lensFacing = getCameraCharacteristics(camID)?.get(CameraCharacteristics.LENS_FACING)!!
+            val lensFacing =
+                getCameraCharacteristics(camID)?.get(CameraCharacteristics.LENS_FACING)!!
             if (lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
                 mCameraLensFacing = camID
                 break
@@ -135,11 +156,12 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         } catch (e: RuntimeException) {
             e.stackTrace
             Toast.makeText(context, "cannot open camera, please grant camera", Toast.LENGTH_SHORT)
-                    .show()
+                .show()
             return
         }
 
-        val cameraCharacteristics = cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
+        val cameraCharacteristics =
+            cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
 
         val param = mCamera?.parameters
         val availble_res = getOptimalResolution()
@@ -148,7 +170,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
         val size = iView.getCurrentDisplay()?.let {
             getPreviewOutputSize(
-                    it, cameraCharacteristics, SurfaceHolder::class.java)
+                it, cameraCharacteristics, SurfaceHolder::class.java
+            )
         }
         // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
         Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
@@ -188,7 +211,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+            )
+        ) {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
@@ -206,7 +232,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         SourceManager.corners = processPicture(pic)
         Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
         SourceManager.pic = pic
-        (context as Activity)?.startActivityForResult(Intent(context, CropActivity::class.java), REQUEST_CODE)
+
+        val cropIntent = Intent(context, CropActivity::class.java);
+        cropIntent.putExtra(EdgeDetectionHandler.INITIAL_BUNDLE, this.initialBundle)
+        (context as Activity)?.startActivityForResult(cropIntent, REQUEST_CODE);
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
@@ -229,20 +258,24 @@ class ScanPresenter constructor(private val context: Context, private val iView:
     override fun onPictureTaken(p0: ByteArray?, p1: Camera?) {
         Log.i(TAG, "on picture taken")
         Observable.just(p0)
-                .subscribeOn(proxySchedule)
-                .subscribe {
-                    val pictureSize = p1?.parameters?.pictureSize
-                    Log.i(TAG, "picture size: " + pictureSize.toString())
-                    val mat = Mat(Size(pictureSize?.width?.toDouble() ?: 1920.toDouble(),
-                            pictureSize?.height?.toDouble() ?: 1080.toDouble()), CvType.CV_8U)
-                    mat.put(0, 0, p0)
-                    val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
-                    Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
-                    mat.release()
-                    detectEdge(pic);
-                    shutted = true;
-                    busy = false
-                }
+            .subscribeOn(proxySchedule)
+            .subscribe {
+                val pictureSize = p1?.parameters?.pictureSize
+                Log.i(TAG, "picture size: " + pictureSize.toString())
+                val mat = Mat(
+                    Size(
+                        pictureSize?.width?.toDouble() ?: 1920.toDouble(),
+                        pictureSize?.height?.toDouble() ?: 1080.toDouble()
+                    ), CvType.CV_8U
+                )
+                mat.put(0, 0, p0)
+                val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
+                Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
+                mat.release()
+                detectEdge(pic);
+                shutted = true;
+                busy = false
+            }
     }
 
     override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
@@ -253,45 +286,47 @@ class ScanPresenter constructor(private val context: Context, private val iView:
         busy = true
         try {
             Observable.just(p0)
-                    .observeOn(proxySchedule)
-                    .doOnError {}
-                    .subscribe({
-                        Log.i(TAG, "start prepare paper")
-                        val parameters = p1?.parameters
-                        val width = parameters?.previewSize?.width
-                        val height = parameters?.previewSize?.height
-                        val yuv = YuvImage(p0, parameters?.previewFormat ?: 0, width ?: 1080, height
-                                ?: 1920, null)
-                        val out = ByteArrayOutputStream()
-                        yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
-                        val bytes = out.toByteArray()
-                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                        val img = Mat()
-                        Utils.bitmapToMat(bitmap, img)
-                        bitmap.recycle()
-                        Core.rotate(img, img, Core.ROTATE_90_CLOCKWISE)
-                        try {
-                            out.close()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
+                .observeOn(proxySchedule)
+                .doOnError {}
+                .subscribe({
+                    Log.i(TAG, "start prepare paper")
+                    val parameters = p1?.parameters
+                    val width = parameters?.previewSize?.width
+                    val height = parameters?.previewSize?.height
+                    val yuv = YuvImage(
+                        p0, parameters?.previewFormat ?: 0, width ?: 1080, height
+                            ?: 1920, null
+                    )
+                    val out = ByteArrayOutputStream()
+                    yuv.compressToJpeg(Rect(0, 0, width ?: 1080, height ?: 1920), 100, out)
+                    val bytes = out.toByteArray()
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    val img = Mat()
+                    Utils.bitmapToMat(bitmap, img)
+                    bitmap.recycle()
+                    Core.rotate(img, img, Core.ROTATE_90_CLOCKWISE)
+                    try {
+                        out.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                    Observable.create<Corners> {
+                        val corner = processPicture(img)
+                        busy = false
+                        if (null != corner && corner.corners.size == 4) {
+                            it.onNext(corner)
+                        } else {
+                            it.onError(Throwable("paper not detected"))
                         }
+                    }.observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            iView.getPaperRect().onCornersDetected(it)
 
-                        Observable.create<Corners> {
-                            val corner = processPicture(img)
-                            busy = false
-                            if (null != corner && corner.corners.size == 4) {
-                                it.onNext(corner)
-                            } else {
-                                it.onError(Throwable("paper not detected"))
-                            }
-                        }.observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    iView.getPaperRect().onCornersDetected(it)
-
-                                }, {
-                                    iView.getPaperRect().onCornersNotDetected()
-                                })
-                    }, { throwable -> Log.e(TAG, throwable.message!!) })
+                        }, {
+                            iView.getPaperRect().onCornersNotDetected()
+                        })
+                }, { throwable -> Log.e(TAG, throwable.message!!) })
         } catch (e: Exception) {
             print(e.message)
         }
@@ -323,10 +358,10 @@ class ScanPresenter constructor(private val context: Context, private val iView:
      * https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap
      */
     private fun <T> getPreviewOutputSize(
-            display: Display,
-            characteristics: CameraCharacteristics,
-            targetClass: Class<T>,
-            format: Int? = null
+        display: Display,
+        characteristics: CameraCharacteristics,
+        targetClass: Class<T>,
+        format: Int? = null
     ): SizeB {
 
         // Find which is smaller: screen or 1080p
@@ -336,7 +371,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
         // If image format is provided, use it to determine supported sizes; else use target class
         val config = characteristics.get(
-                CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
+            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+        )!!
         if (format == null)
             assert(StreamConfigurationMap.isOutputSupportedFor(targetClass))
         else
@@ -346,8 +382,8 @@ class ScanPresenter constructor(private val context: Context, private val iView:
 
         // Get available sizes and sort them by area from largest to smallest
         val validSizes = allSizes
-                .sortedWith(compareBy { it.height * it.width })
-                .map { SmartSize(it.width, it.height) }.reversed()
+            .sortedWith(compareBy { it.height * it.width })
+            .map { SmartSize(it.width, it.height) }.reversed()
 
         // Then, get the largest output size that is smaller or equal than our max size
         return validSizes.first { it.long <= maxSize.long && it.short <= maxSize.short }.size

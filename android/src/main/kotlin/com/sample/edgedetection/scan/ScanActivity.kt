@@ -6,20 +6,17 @@ import android.content.pm.PackageManager
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Display
-import android.view.MenuItem
-import android.view.SurfaceView
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
-import com.sample.edgedetection.SCANNED_RESULT
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Core
@@ -33,63 +30,19 @@ import java.io.InputStream
 
 class ScanActivity : BaseActivity(), IScanView.Proxy {
 
-    private val REQUEST_CAMERA_PERMISSION = 0
-
-    private lateinit var mPresenter: ScanPresenter
-
+    private lateinit var mPresenter: ScanPresenter;
 
     override fun provideContentViewId(): Int = R.layout.activity_scan
 
-    companion object{
-        public const val FROM_GALLERY = "from_gallery"
-    }
-
     override fun initPresenter() {
-        mPresenter = ScanPresenter(this, this)
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+        mPresenter = ScanPresenter(this, this, initialBundle)
     }
 
     override fun prepare() {
         if (!OpenCVLoader.initDebug()) {
             Log.i(TAG, "loading opencv error, exit")
             finish()
-        }
-        if (ContextCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                            android.Manifest.permission.CAMERA,
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ),
-                    REQUEST_CAMERA_PERMISSION
-            )
-        } else if (ContextCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(android.Manifest.permission.CAMERA),
-                    REQUEST_CAMERA_PERMISSION
-            )
-        } else if (ContextCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    REQUEST_CAMERA_PERMISSION
-            )
         }
 
         shut.setOnClickListener {
@@ -98,16 +51,37 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             }
         }
 
+        flash.visibility =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
+            ) View.VISIBLE else View.GONE;
+        flash.setOnClickListener {
+            mPresenter.toggleFlash();
+        }
+
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+
+        this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE) as String
+
+        gallery.visibility =
+            if (initialBundle.getBoolean(EdgeDetectionHandler.CAN_USE_GALLERY, true))
+                View.VISIBLE
+            else View.GONE;
+
         gallery.setOnClickListener {
             pickupFromGallery()
         };
 
-        if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false)){
+        if (initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY) && initialBundle.getBoolean(
+                EdgeDetectionHandler.FROM_GALLERY,
+                false
+            )
+        ) {
             pickupFromGallery()
         }
     }
 
-    fun pickupFromGallery(){
+    fun pickupFromGallery() {
         mPresenter.stop()
         val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         ActivityCompat.startActivityForResult(this, gallery, 1, null);
@@ -128,47 +102,6 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         finish()
     }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
-
-        var allGranted = false
-        var indexPermission = -1
-
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.count() == 1) {
-                if (permissions.indexOf(android.Manifest.permission.CAMERA) >= 0) {
-                    indexPermission = permissions.indexOf(android.Manifest.permission.CAMERA)
-                }
-                if (permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) >= 0) {
-                    indexPermission =
-                            permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-                if (indexPermission >= 0 && grantResults[indexPermission] == PackageManager.PERMISSION_GRANTED) {
-                    allGranted = true
-                }
-            }
-
-            if (grantResults.count() == 2 && (
-                            grantResults[permissions.indexOf(android.Manifest.permission.CAMERA)] == PackageManager.PERMISSION_GRANTED
-                                    && grantResults[permissions.indexOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)] == PackageManager.PERMISSION_GRANTED)
-            ) {
-                allGranted = true
-            }
-        }
-
-        if (allGranted) {
-            showMessage(R.string.camera_grant)
-            mPresenter.initCamera()
-            mPresenter.updateCamera()
-        }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-    }
-
     override fun getCurrentDisplay(): Display? {
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             this.display
@@ -186,13 +119,13 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (null != data && null != data.extras) {
-                    val path = data.extras!!.getString(SCANNED_RESULT)
-                    setResult(Activity.RESULT_OK, Intent().putExtra(SCANNED_RESULT, path))
-                    finish()
-                }
-            }else{
-                if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false))
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(
+                        EdgeDetectionHandler.FROM_GALLERY, false
+                    )
+                )
                     finish()
             }
         }
@@ -203,8 +136,12 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     onImageSelected(uri)
                 }
-            }else{
-                if(intent.hasExtra(FROM_GALLERY) && intent.getBooleanExtra(FROM_GALLERY, false))
+            } else {
+                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(
+                        EdgeDetectionHandler.FROM_GALLERY,
+                        false
+                    )
+                )
                     finish()
             }
         }
@@ -227,8 +164,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         val exif = ExifInterface(iStream);
         var rotation = -1
         val orientation: Int = exif.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED)
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
         when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotation = Core.ROTATE_90_CLOCKWISE
             ExifInterface.ORIENTATION_ROTATE_180 -> rotation = Core.ROTATE_180

@@ -69,8 +69,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         android:layout_alignParentBottom="true"
-        android:padding="8dp">
+        android:background="@color/colorPrimary"
+        >
 
         <ImageView
             android:id="@+id/crop"
@@ -78,9 +80,9 @@
             android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:background="@drawable/round_button"
-            android:padding="8dp"
+            android:padding="12dp"
             app:srcCompat="@drawable/ic_crop"
-            app:tint="@android:color/darker_gray" />
+            app:tint="@android:color/white" />
 
     </RelativeLayout>
 

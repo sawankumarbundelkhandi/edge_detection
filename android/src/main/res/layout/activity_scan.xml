@@ -20,28 +20,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="8dp">
+        android:background="@color/colorPrimary"
+        android:paddingLeft="15dp"
+        android:paddingTop="30dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="30dp">
+
+        <ImageView
+            android:id="@+id/flash"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="false"
+            android:layout_centerVertical="true"
+            android:background="@drawable/round_button"
+            android:padding="12dp"
+            app:srcCompat="@drawable/ic_baseline_flash_on_24"
+            app:tint="@android:color/white" />
 
         <ImageView
             android:id="@+id/shut"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/round_button"
-            android:padding="8dp"
-            app:srcCompat="@drawable/ic_menu_camera"
-            app:tint="@android:color/darker_gray" />
+            android:background="@drawable/shut_button"
+            app:tint="@android:color/white" />
 
         <ImageView
             android:id="@+id/gallery"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/round_button"
-            android:padding="8dp"
+            android:padding="12dp"
             app:srcCompat="@drawable/ic_menu_gallery"
-            app:tint="@android:color/darker_gray" />
+            app:tint="@android:color/white" />
+
     </RelativeLayout>
 
 </RelativeLayout>
