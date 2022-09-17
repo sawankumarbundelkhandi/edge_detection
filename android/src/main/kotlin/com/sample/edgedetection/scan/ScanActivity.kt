@@ -53,6 +53,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
         flash.visibility =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                // to hidde the flashLight button from  SDK versions which we do not handle the permission for!
+                Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
+                //
                 baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
             ) View.VISIBLE else View.GONE;
         flash.setOnClickListener {

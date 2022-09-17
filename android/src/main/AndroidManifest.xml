@@ -2,11 +2,13 @@
     package="com.sample.edgedetection">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="true" />
 
-    <permission
+    <uses-permission
         android:name="android.permission.FLASHLIGHT"
         android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
-        android:protectionLevel="normal" />
+        android:protectionLevel="normal"
+        android:maxSdkVersion="30"/>
 
     <application
         android:allowBackup="true"
