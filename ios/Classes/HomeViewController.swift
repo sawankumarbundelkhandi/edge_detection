@@ -41,6 +41,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
             present(cameraController, animated: true) {
                 if let window = UIApplication.shared.keyWindow {
                     window.addSubview(self.selectPhotoButton)
+                    window.addSubview(self.showAllPhotosButton)
                     self.setupConstraints()
                 }
             }
@@ -58,6 +59,16 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         button.setImage(UIImage(named: "gallery", in: Bundle(for: SwiftEdgeDetectionPlugin.self), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = UIColor.white
         button.addTarget(self, action: #selector(selectPhoto), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        return button
+    }()
+
+        lazy var showAllPhotosButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "show", in: Bundle(for: SwiftEdgeDetectionPlugin.self), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = UIColor.white
+        button.addTarget(self, action: #selector(showPhotos), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isHidden = true
         return button
@@ -87,13 +98,31 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
             window.rootViewController?.present(scanPhotoVC, animated: true)
         }
     }
+
+    @objc func showPhotos() {
+        print("showPhotos")
+    // if let window = UIApplication.shared.keyWindow {
+    //     window.rootViewController?.dismiss(animated: true, completion: nil)
+    //     self.hideButtons()
+        
+    //     let scanPhotoVC = ScanPhotoViewController()
+    //     scanPhotoVC._result = _result
+    //     if #available(iOS 13.0, *) {
+    //         scanPhotoVC.isModalInPresentation = true
+    //         scanPhotoVC.overrideUserInterfaceStyle = .dark
+    //     }
+    //     window.rootViewController?.present(scanPhotoVC, animated: true)
+    // }
+}
     
     func hideButtons() {
         selectPhotoButton.isHidden = true
+        showAllPhotosButton.isHidden = true
     }
     
     private func setupConstraints() {
         var selectPhotoButtonConstraints = [NSLayoutConstraint]()
+        var showAllPhotosButtonConstraints = [NSLayoutConstraint]()
         
         if #available(iOS 11.0, *) {
             selectPhotoButtonConstraints = [
@@ -102,15 +131,27 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
                 selectPhotoButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -24.0),
                 view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
             ]
-        } else {
             selectPhotoButtonConstraints = [
+                selectPhotoButton.widthAnchor.constraint(equalToConstant: 44.0),
+                selectPhotoButton.heightAnchor.constraint(equalToConstant: 44.0),
+                selectPhotoButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -48.0),
+                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
+            ]
+        } else {
+            showAllPhotosButtonConstraints = [
                 selectPhotoButton.widthAnchor.constraint(equalToConstant: 44.0),
                 selectPhotoButton.heightAnchor.constraint(equalToConstant: 44.0),
                 selectPhotoButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -24.0),
                 view.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
             ]
+            showAllPhotosButtonConstraints = [
+                selectPhotoButton.widthAnchor.constraint(equalToConstant: 44.0),
+                selectPhotoButton.heightAnchor.constraint(equalToConstant: 44.0),
+                selectPhotoButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -48.0),
+                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: selectPhotoButton.bottomAnchor, constant: (65.0 / 2) - 10.0)
+            ]
         }
-        NSLayoutConstraint.activate(selectPhotoButtonConstraints)
+        NSLayoutConstraint.activate(selectPhotoButtonConstraints + showAllPhotosButtonConstraints)
     }
     
     func setParams(saveTo: String, canUseGallery: Bool) {
