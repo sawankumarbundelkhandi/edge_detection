@@ -70,7 +70,7 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
         button.tintColor = UIColor.white
         button.addTarget(self, action: #selector(showPhotos), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isHidden = true
+        button.isHidden = false
         return button
     }()
     
