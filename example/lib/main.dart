@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,17 +24,31 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> getImage() async {
+    bool isCameraGranted = await Permission.camera.request().isGranted;
+    if (!isCameraGranted) {
+      isCameraGranted = await Permission.camera.request() == PermissionStatus.granted;
+    }
+
+    if (!isCameraGranted) {
+      // Have not permission to camera
+      return;
+    }
+
+// Generate filepath for saving
     String imagePath = join((await getApplicationSupportDirectory()).path,
         "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+
     try {
-      bool success = await EdgeDetection.detectEdge(imagePath);
-      if (!success) {
-        imagePath = "Canceled by user";
-      }
-    } on PlatformException catch (e) {
-      imagePath = e.toString();
+      //Make sure to await the call to detectEdge.
+      bool success = await EdgeDetection.detectEdge(imagePath,
+        canUseGallery: false,
+        androidScanTitle: 'Сканирование', // use custom localizations for android
+        androidCropTitle: 'Редактирование',
+        androidCropBlackWhiteTitle: 'Ч/Б',
+        androidCropReset: 'Отменить',
+      );
+    } catch (e) {
+      print(e);
     }
 
     // If the widget was removed from the tree while the asynchronous platform

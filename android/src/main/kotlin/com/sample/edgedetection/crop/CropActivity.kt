@@ -93,6 +93,9 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
         if (item.itemId == R.id.action_label) {
             Log.e(TAG, "Saved touched!")
+            // Bug fix: prevent clicking more than one time
+            item.setEnabled(false)
+            //
             mPresenter.save()
             setResult(Activity.RESULT_OK)
             System.gc()

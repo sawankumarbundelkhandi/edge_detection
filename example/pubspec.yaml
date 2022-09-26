@@ -12,8 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  path: ^1.8.0
+  permission_handler: ^10.0.0
   path_provider: ^2.0.11
+  path: ^1.8.2
   edge_detection:
     # When depending on this package from a real application you should use:
     #   edge_detection: ^x.y.z
