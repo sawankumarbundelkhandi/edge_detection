@@ -86,7 +86,11 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
     fun pickupFromGallery() {
         mPresenter.stop()
-        val gallery = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val gallery = Intent(
+            Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply{
+            type="image/*"
+        }
         ActivityCompat.startActivityForResult(this, gallery, 1, null);
     }
 
