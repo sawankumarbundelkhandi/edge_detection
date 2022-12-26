@@ -42,10 +42,10 @@ class _MyAppState extends State<MyApp> {
       //Make sure to await the call to detectEdge.
       bool success = await EdgeDetection.detectEdge(imagePath,
         canUseGallery: true,
-        androidScanTitle: 'Сканирование', // use custom localizations for android
-        androidCropTitle: 'Редактирование',
-        androidCropBlackWhiteTitle: 'Ч/Б',
-        androidCropReset: 'Отменить',
+        androidScanTitle: 'Scanning', // use custom localizations for android
+        androidCropTitle: 'Crop',
+        androidCropBlackWhiteTitle: 'Black White',
+        androidCropReset: 'Reset',
       );
     } catch (e) {
       print(e);

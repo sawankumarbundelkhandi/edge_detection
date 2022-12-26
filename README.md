@@ -71,15 +71,30 @@ if (!isCameraGranted) {
 // Generate filepath for saving
 String imagePath = join((await getApplicationSupportDirectory()).path,
     "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
+
+// Use below code for live camera detection with option to select from gallery in the camera feed.
         
 try {
     //Make sure to await the call to detectEdge.
     bool success = await EdgeDetection.detectEdge(imagePath,
-        canUseGallery: false,
-        androidScanTitle: 'ScanTitle', // use custom localizations for android
-        androidCropTitle: 'CropTitle',
-        androidCropBlackWhiteTitle: 'CropBlackWhiteTitle',
-        androidCropReset: 'CropReset',
+        canUseGallery: true,
+        androidScanTitle: 'Scanning', // use custom localizations for android
+        androidCropTitle: 'Crop',
+        androidCropBlackWhiteTitle: 'Black White',
+        androidCropReset: 'Reset',
+    );
+} catch (e) {
+    print(e);
+}
+
+// Use below code for selecting directly from the gallery.
+
+try {
+    //Make sure to await the call to detectEdgeFromGallery.
+    bool success = await EdgeDetection.detectEdgeFromGallery(imagePath,
+        androidCropTitle: 'Crop', // use custom localizations for android
+        androidCropBlackWhiteTitle: 'Black White',
+        androidCropReset: 'Reset',
     );
 } catch (e) {
     print(e);
