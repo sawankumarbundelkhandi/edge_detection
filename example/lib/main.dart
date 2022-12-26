@@ -26,7 +26,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> getImage() async {
     bool isCameraGranted = await Permission.camera.request().isGranted;
     if (!isCameraGranted) {
-      isCameraGranted = await Permission.camera.request() == PermissionStatus.granted;
+      isCameraGranted =
+          await Permission.camera.request() == PermissionStatus.granted;
     }
 
     if (!isCameraGranted) {
@@ -40,7 +41,8 @@ class _MyAppState extends State<MyApp> {
 
     try {
       //Make sure to await the call to detectEdge.
-      bool success = await EdgeDetection.detectEdge(imagePath,
+      bool success = await EdgeDetection.detectEdge(
+        imagePath,
         canUseGallery: true,
         androidScanTitle: 'Scanning', // use custom localizations for android
         androidCropTitle: 'Crop',

@@ -30,7 +30,7 @@ class EdgeDetection {
       'crop_title': androidCropTitle,
       'crop_black_white_title': androidCropBlackWhiteTitle,
       'crop_reset_title': androidCropReset,
-      'from_gallery' : true,
+      'from_gallery': true,
     });
   }
 }
