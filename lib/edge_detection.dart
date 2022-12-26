@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class EdgeDetection {
   static const MethodChannel _channel = const MethodChannel('edge_detection');
 
+  /// Call this method to scan the object edge in live camera.
   static Future<bool> detectEdge(String saveTo,
       {bool canUseGallery: true,
       String androidScanTitle: "Scanning",
@@ -21,6 +22,7 @@ class EdgeDetection {
     });
   }
 
+  /// Call this method to scan the object edge from a gallery image.
   static Future<bool> detectEdgeFromGallery(String saveTo,
       {String androidCropTitle: "Crop",
       String androidCropBlackWhiteTitle: "Black White",
