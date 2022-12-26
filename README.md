@@ -76,16 +76,22 @@ try {
     //Make sure to await the call to detectEdge.
     bool success = await EdgeDetection.detectEdge(imagePath,
         canUseGallery: false,
-        androidScanTitle: 'Сканирование', // use custom localizations for android
-        androidCropTitle: 'Редактирование',
-        androidCropBlackWhiteTitle: 'Ч/Б',
-        androidCropReset: 'Отменить',
+        androidScanTitle: 'ScanTitle', // use custom localizations for android
+        androidCropTitle: 'CropTitle',
+        androidCropBlackWhiteTitle: 'CropBlackWhiteTitle',
+        androidCropReset: 'CropReset',
     );
 } catch (e) {
     print(e);
 }
 
 ```
+
+## Demo
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/demo.gif" alt="Demo" style="margin:auto" width="372" height="686">
+</p>
 
 ## Screenshots
 
@@ -95,13 +101,13 @@ try {
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/1.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/1.png" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/2.png" width="200" />
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/2.png" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/android/3.png" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/android/3.png" width="200"/>
          </td>
       </tr>
    </table>
@@ -113,13 +119,13 @@ try {
    <table>
       <tr>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/1.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/1.PNG" width="200"/>
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/2.PNG" width="200" />
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/2.PNG" width="200" />
          </td>
          <td style="text-align: center">
-            <img src="https://raw.githubusercontent.com/VoronovAlexander/edge_detection/master/screenshots/ios/3.PNG" width="200"/>
+            <img src="https://raw.githubusercontent.com/sawankumarbundelkhandi/edge_detection/master/screenshots/ios/3.PNG" width="200"/>
          </td>
       </tr>
    </table>

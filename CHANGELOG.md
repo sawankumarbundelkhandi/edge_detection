@@ -1,3 +1,9 @@
+## 1.1.0
+
+- Lot of bug fixes (Thanks to @VoronovAlexander for the PR)
+- Adding support to direct pickup from gallery (Thanks to @rsanjuan87 for the PR)
+- Handled flashLight permission and fix for pressing save button more than once (Thanks to @AhmadHusein5853 for the PR)
+
 ## 1.0.9
 
 - Fix for plugin not working on Android because of link error.
