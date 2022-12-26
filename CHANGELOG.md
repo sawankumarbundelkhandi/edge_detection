@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Bug fix for direct pickup from gallery.
+
 ## 1.1.0
 
 - Lot of bug fixes (Thanks to @VoronovAlexander for the PR)

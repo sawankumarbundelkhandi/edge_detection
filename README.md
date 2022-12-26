@@ -44,7 +44,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.1.0
+  edge_detection: ^1.1.1
   permission_handler: ^10.0.0
   path_provider: ^2.0.11
   path: ^1.8.2
