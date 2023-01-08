@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  Future<void> getImage() async {
+  Future<void> getImageFromCamera() async {
     bool isCameraGranted = await Permission.camera.request().isGranted;
     if (!isCameraGranted) {
       isCameraGranted =
@@ -63,6 +63,36 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+
+  Future<void> getImageFromGallery() async {
+// Generate filepath for saving
+    String imagePath = join((await getApplicationSupportDirectory()).path,
+        "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
+
+    print("$imagePath : _imagePath");
+
+    try {
+      //Make sure to await the call to detectEdgeFromGallery.
+      bool success = await EdgeDetection.detectEdgeFromGallery(imagePath,
+        androidCropTitle: 'Crop', // use custom localizations for android
+        androidCropBlackWhiteTitle: 'Black White',
+        androidCropReset: 'Reset',
+      );
+      print("success: $success");
+    } catch (e) {
+      print(e);
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _imagePath = imagePath;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -77,8 +107,15 @@ class _MyAppState extends State<MyApp> {
             children: [
               Center(
                 child: ElevatedButton(
-                  onPressed: getImage,
+                  onPressed: getImageFromCamera,
                   child: Text('Scan'),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: getImageFromGallery,
+                  child: Text('Upload'),
                 ),
               ),
               SizedBox(height: 20),
