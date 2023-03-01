@@ -89,6 +89,8 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
                 finishWithSuccess(true)
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finishWithSuccess(false)
+            }else if (resultCode == 400) {
+                finishWithError("400", data?.getStringExtra("RESULT") ?: "ERROR")
             }
             return true
         }
