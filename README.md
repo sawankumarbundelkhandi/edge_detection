@@ -6,7 +6,27 @@ A flutter plugin to detect edges of objects, scan paper, detect corners, detect 
 
 ### iOS
 
-iOS 10.0 or higher is needed to use the plugin. If compiling for any version lower than 10.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 10 (or higher) in your `ios/Podfile` file.
+iOS 10.0 or higher is needed to use the plugin. If compiling for any version lower than 10.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 10 (or higher) in your `ios/Podfile` file, and inform/request access to the permissions acording with `permission_handler` 
+```
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+
+        ## dart: PermissionGroup.camera
+         'PERMISSION_CAMERA=1',
+
+        ## dart: PermissionGroup.photos
+         'PERMISSION_PHOTOS=1',
+      ]
+
+    end
+    # End of the permission_handler configuration
+  end
+end
+```
 
 Add below permission to the `ios/Runner/Info.plist`:
 
@@ -17,6 +37,10 @@ Or in text format add the key:
 ```xml
 <key>NSCameraUsageDescription</key>
 <string>Can I use the camera please?</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Can I use the photos please?</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Can I use the photos please?</string>
 ```
 
 Add to your need localizations to your app through XCode for localize actions buttons from WeScan (https://github.com/WeTransfer/WeScan/tree/master/WeScan/Resources/Localisation)
