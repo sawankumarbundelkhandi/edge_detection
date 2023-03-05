@@ -12,6 +12,7 @@ import Foundation
 class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var _result:FlutterResult?
+    var saveTo: String = ""
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
@@ -95,9 +96,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
             return nil
         }
-        let fileName = randomString(length:10);
+        var fileName = randomString(length:10);
         let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
-        
         
         do {
             let fileManager = FileManager.default
@@ -117,7 +117,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         
         do {
             try data.write(to: filePath)
-            return filePath.path
+            try FileManager.default.moveItem(atPath: filePath.path, toPath: self.saveTo)
+            return self.saveTo
         } catch {
             print(error.localizedDescription)
             return nil
