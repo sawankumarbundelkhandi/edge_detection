@@ -11,7 +11,8 @@ import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-import kotlinx.android.synthetic.main.activity_crop.*
+//import kotlinx.android.synthetic.main.activity_crop.*
+
 
 
 class CropActivity : BaseActivity(), ICropView.Proxy {
@@ -29,9 +30,9 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        paper.post {
+        findViewById<View>(R.id.paper).post {
             //we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
-            mPresenter.onViewsReady(paper.width, paper.height)
+            mPresenter.onViewsReady(findViewById<View>(R.id.paper).width, findViewById<View>(R.id.paper).height)
         }
     }
 
@@ -48,11 +49,11 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         }
     }
 
-    override fun getPaper(): ImageView = paper
+    override fun getPaper(): ImageView = findViewById(R.id.paper)
 
-    override fun getPaperRect(): PaperRectangle = paper_rect
+    override fun getPaperRect() = findViewById<PaperRectangle>(R.id.paper_rect)
 
-    override fun getCroppedPaper(): ImageView = picture_cropped
+    override fun getCroppedPaper() = findViewById<ImageView>(R.id.picture_cropped)
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.crop_activity_menu, menu)

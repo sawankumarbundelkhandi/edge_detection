@@ -17,7 +17,7 @@ import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-import kotlinx.android.synthetic.main.activity_scan.*
+//import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -43,20 +43,20 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             finish()
         }
 
-        shut.setOnClickListener {
+        findViewById<View>(R.id.shut).setOnClickListener {
             if (mPresenter.canShut) {
                 mPresenter.shut()
             }
         }
 
-        flash.visibility =
+        findViewById<View>(R.id.flash).visibility =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                         // to hidde the flashLight button from  SDK versions which we do not handle the permission for!
                         Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
                         //
                         baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
                 ) View.VISIBLE else View.GONE;
-        flash.setOnClickListener {
+        findViewById<View>(R.id.flash).setOnClickListener {
             mPresenter.toggleFlash();
         }
 
@@ -66,12 +66,12 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE) as String
         }
         //
-        gallery.visibility =
+        findViewById<View>(R.id.gallery).visibility =
                 if (initialBundle.getBoolean(EdgeDetectionHandler.CAN_USE_GALLERY, true))
                     View.VISIBLE
                 else View.GONE;
 
-        gallery.setOnClickListener {
+        findViewById<View>(R.id.gallery).setOnClickListener {
             pickupFromGallery()
         };
 
@@ -117,9 +117,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
     }
 
-    override fun getSurfaceView(): SurfaceView = surface
+    override fun getSurfaceView() = findViewById<SurfaceView>(R.id.surface)
 
-    override fun getPaperRect(): PaperRectangle = paper_rect
+    override fun getPaperRect() = findViewById<PaperRectangle>(R.id.paper_rect)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
