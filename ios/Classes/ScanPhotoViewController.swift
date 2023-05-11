@@ -96,8 +96,8 @@ class ScanPhotoViewController: UIViewController, ImageScannerControllerDelegate,
         guard let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL else {
             return nil
         }
-        var fileName = randomString(length:10);
-        let filePath: URL = directory.appendingPathComponent(fileName + ".png")!
+         let path : String = "file://" + self.saveTo.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)!
+        let filePath: URL = URL.init(string: path)!
         
         do {
             let fileManager = FileManager.default

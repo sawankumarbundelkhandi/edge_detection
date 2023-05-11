@@ -80,10 +80,10 @@ class HomeViewController: UIViewController, ImageScannerControllerDelegate {
             
             let scanPhotoVC = ScanPhotoViewController()
             scanPhotoVC._result = _result
-            scanPhotoVC.saveTo = self.saveTo
             if #available(iOS 13.0, *) {
                 scanPhotoVC.isModalInPresentation = true
                 scanPhotoVC.overrideUserInterfaceStyle = .dark
+                scanPhotoVC.saveTo = saveTo
             }
             window.rootViewController?.present(scanPhotoVC, animated: true)
         }
