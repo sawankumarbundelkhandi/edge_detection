@@ -47,11 +47,11 @@ Add to your need localizations to your app through XCode for localize actions bu
 
 ### Android
 
-The plugin code is written in kotlin 1.5.31 so the same has to be set to the android project of yours for compilation.
-Change the kotlin_version to 1.5.31 in your `android/build.gradle` file.
+The plugin code is written in kotlin 1.8.0 so the same has to be set to the android project of yours for compilation.
+Change the kotlin_version to 1.8.0 in your `android/build.gradle` file.
 
 ```
-ext.kotlin_version = '1.5.31'
+ext.kotlin_version = '1.8.0'
 ```
 
 Change the minimum Android SDK version to 21 (or higher) in your `android/app/build.gradle` file.
