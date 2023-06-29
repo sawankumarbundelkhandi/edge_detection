@@ -11,9 +11,6 @@ import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-//import kotlinx.android.synthetic.main.activity_crop.*
-
-
 
 class CropActivity : BaseActivity(), ICropView.Proxy {
 
@@ -31,7 +28,7 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         findViewById<View>(R.id.paper).post {
-            //we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
+            // we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
             mPresenter.onViewsReady(findViewById<View>(R.id.paper).width, findViewById<View>(R.id.paper).height)
         }
     }
@@ -90,13 +87,9 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
-        }
-
-        if (item.itemId == R.id.action_label) {
+        } else if (item.itemId == R.id.action_label) {
             Log.e(TAG, "Saved touched!")
-            // Bug fix: prevent clicking more than one time
             item.setEnabled(false)
-            //
             mPresenter.save()
             setResult(Activity.RESULT_OK)
             System.gc()

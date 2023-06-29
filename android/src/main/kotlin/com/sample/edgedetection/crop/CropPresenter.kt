@@ -112,9 +112,6 @@ class CropPresenter(
             Log.i(TAG, "picture null?")
             return
         }
-
-        //croppedBitmap = croppedBitmap?.rotateInt(rotateBitmapDegree)
-
         rotateBitmap = croppedBitmap
         enhancedPicture = croppedBitmap
 
@@ -141,8 +138,6 @@ class CropPresenter(
 
         rotateBitmap = rotateBitmap?.rotateInt(rotateBitmapDegree)
 
-        //rotateBitmap = rotateBitmap?.rotateFloat(rotateBitmapDegree.toFloat())
-
         iCropView.getCroppedPaper().setImageBitmap(rotateBitmap)
 
         enhancedPicture = rotateBitmap
@@ -161,7 +156,7 @@ class CropPresenter(
             rotatePic.recycle()
             Log.i(TAG, "RotateBitmap Saved")
         } else {
-            //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
+            // first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
             val pic = enhancedPicture
 
             if (null != pic) {

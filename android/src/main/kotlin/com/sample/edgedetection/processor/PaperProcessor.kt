@@ -105,9 +105,6 @@ private fun findContours(src: Mat): List<MatOfPoint> {
         .sortedByDescending { p: MatOfPoint -> Imgproc.contourArea(p) }
         .take(25)
 
-
-    Log.i("FILTERED COUNT", filteredContours.size.toString())
-
     hierarchy.release()
     grayImage.release()
     cannedImage.release()
@@ -128,12 +125,11 @@ private fun getCorners(contours: List<MatOfPoint>, size: Size): Corners? {
             val peri = Imgproc.arcLength(c2f, true)
             val approx = MatOfPoint2f()
             Imgproc.approxPolyDP(c2f, approx, 0.03 * peri, true)
-            //val area = Imgproc.contourArea(approx)
             val points = approx.toArray().asList()
             val convex = MatOfPoint()
             approx.convertTo(convex, CvType.CV_32S)
             // select biggest 4 angles polygon
-            if (points.size == 4 && Imgproc.isContourConvex(convex)) { // && checkDistances(points)
+            if (points.size == 4 && Imgproc.isContourConvex(convex)) { 
                 val foundPoints = sortPoints(points)
                 return Corners(foundPoints, size)
             }

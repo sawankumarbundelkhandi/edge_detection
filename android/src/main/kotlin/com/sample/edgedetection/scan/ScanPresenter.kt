@@ -77,11 +77,13 @@ class ScanPresenter constructor(
     }
 
     fun start() {
-        mCamera?.startPreview() ?: Log.i(TAG, "camera null")
+        mCamera?.startPreview() ?:
+        Log.i(TAG, "mCamera startPreview")
     }
 
     fun stop() {
-        mCamera?.stopPreview() ?: Log.i(TAG, "camera null")
+        mCamera?.stopPreview() ?:
+        Log.i(TAG, "mCamera stopPreview")
     }
 
     val canShut: Boolean get() = shutted
@@ -163,22 +165,16 @@ class ScanPresenter constructor(
         val cameraCharacteristics =
             cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
 
-        val param = mCamera?.parameters
-        val availble_res = getOptimalResolution()
-
-        //val size = getMaxResolution()
-
         val size = iView.getCurrentDisplay()?.let {
             getPreviewOutputSize(
                 it, cameraCharacteristics, SurfaceHolder::class.java
             )
         }
-        // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
-        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
-        // viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
+        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
 
         size?.width?.toString()?.let { Log.i(TAG, it) }
+        val param = mCamera?.parameters
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
         val display = iView.getCurrentDisplay()
         val point = Point()
@@ -211,21 +207,19 @@ class ScanPresenter constructor(
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            )
-        ) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+        {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
             Log.d(TAG, "autofocus not available")
         }
+
         param?.flashMode = Camera.Parameters.FLASH_MODE_OFF
 
         mCamera?.parameters = param
         mCamera?.setDisplayOrientation(90)
         mCamera?.enableShutterSound(false)
-
     }
 
     fun detectEdge(pic: Mat) {
@@ -282,14 +276,12 @@ class ScanPresenter constructor(
         if (busy) {
             return
         }
-        Log.i(TAG, "on process start")
         busy = true
         try {
             Observable.just(p0)
                 .observeOn(proxySchedule)
                 .doOnError {}
                 .subscribe({
-                    Log.i(TAG, "start prepare paper")
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
                     val height = parameters?.previewSize?.height
@@ -388,18 +380,4 @@ class ScanPresenter constructor(
         // Then, get the largest output size that is smaller or equal than our max size
         return validSizes.first { it.long <= maxSize.long && it.short <= maxSize.short }.size
     }
-
-    private fun getOptimalResolution(): Camera.Size? {
-
-
-        val resolutions = mCamera?.parameters?.supportedPreviewSizes
-        if (resolutions != null) {
-            for (item in resolutions) {
-                println("${item.width}, ${item.height}")
-            }
-        }
-        return null
-
-    }
-
 }

@@ -17,7 +17,6 @@ import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-//import kotlinx.android.synthetic.main.activity_scan.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -49,23 +48,22 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             }
         }
 
-        findViewById<View>(R.id.flash).visibility =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        // to hidde the flashLight button from  SDK versions which we do not handle the permission for!
-                        Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
-                        //
-                        baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
-                ) View.VISIBLE else View.GONE;
+        // to hide the flashLight button from  SDK versions which we do not handle the permission for!
+        findViewById<View>(R.id.flash).visibility = if
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q && baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+            View.VISIBLE else
+                View.GONE;
+        
         findViewById<View>(R.id.flash).setOnClickListener {
             mPresenter.toggleFlash();
         }
 
         val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
-        // NullPointerException here in case directly FROM_GALLERY
+        
         if(!initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY)){
             this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE, "") as String
         }
-        //
+
         findViewById<View>(R.id.gallery).visibility =
                 if (initialBundle.getBoolean(EdgeDetectionHandler.CAN_USE_GALLERY, true))
                     View.VISIBLE
@@ -75,11 +73,8 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             pickupFromGallery()
         };
 
-        if (initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY) && initialBundle.getBoolean(
-                        EdgeDetectionHandler.FROM_GALLERY,
-                        false
-                )
-        ) {
+        if (initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY) && initialBundle.getBoolean(EdgeDetectionHandler.FROM_GALLERY,false))
+        {
             pickupFromGallery()
         }
     }
@@ -129,10 +124,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 setResult(Activity.RESULT_OK)
                 finish()
             } else {
-                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(
-                                EdgeDetectionHandler.FROM_GALLERY, false
-                        )
-                )
+                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(EdgeDetectionHandler.FROM_GALLERY, false))
                     finish()
             }
         }
@@ -144,11 +136,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                     onImageSelected(uri)
                 }
             } else {
-                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(
-                                EdgeDetectionHandler.FROM_GALLERY,
-                                false
-                        )
-                )
+                if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(EdgeDetectionHandler.FROM_GALLERY,false))
                     finish()
             }
         }
