@@ -62,8 +62,8 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
 
         val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
         // NullPointerException here in case directly FROM_GALLERY
-        if(! initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY)){
-            this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE) as String
+        if(!initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY)){
+            this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE, "") as String
         }
         //
         findViewById<View>(R.id.gallery).visibility =

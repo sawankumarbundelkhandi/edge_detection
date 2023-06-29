@@ -11,7 +11,7 @@
         android:maxSdkVersion="30"/>
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
