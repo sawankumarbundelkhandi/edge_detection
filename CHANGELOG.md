@@ -1,3 +1,10 @@
+## 1.1.2
+
+- Bug Fix: NullPointerException for scanning title (Thanks to @AhmadHusein5853 for the PR)
+- Added support for PNG and added Exception handling to help catch errors when selecting png images (Thanks to @duypham for the PR)
+- Fixed FileNotFound on iOS (Thanks to @rsanjuan87 for the PR)
+- Fix for not building by usage kotlin-android-extensions plugin (Thanks to @rsanjuan87 for the PR)
+
 ## 1.1.1
 
 - Bug fix for direct pickup from gallery.

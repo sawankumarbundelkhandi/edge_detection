@@ -6,7 +6,8 @@ A flutter plugin to detect edges of objects, scan paper, detect corners, detect 
 
 ### iOS
 
-iOS 10.0 or higher is needed to use the plugin. If compiling for any version lower than 10.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 10 (or higher) in your `ios/Podfile` file, and inform/request access to the permissions acording with `permission_handler` 
+iOS 13.0 or higher is needed to use the plugin. If compiling for any version lower than 13.0 make sure to check the iOS version before using the plugin. Change the minimum platform version to 13 (or higher) in your `ios/Podfile` file, and inform/request access to the permissions acording with `permission_handler`
+
 ```
 post_install do |installer|
   installer.pods_project.targets.each do |target|
@@ -68,7 +69,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.1.1
+  edge_detection: ^1.1.2
   permission_handler: ^10.0.0
   path_provider: ^2.0.11
   path: ^1.8.2
@@ -97,7 +98,7 @@ String imagePath = join((await getApplicationSupportDirectory()).path,
     "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
 
 // Use below code for live camera detection with option to select from gallery in the camera feed.
-        
+
 try {
     //Make sure to await the call to detectEdge.
     bool success = await EdgeDetection.detectEdge(imagePath,
