@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
-// Generate filepath for saving
+    // Generate filepath for saving
     String imagePath = join((await getApplicationSupportDirectory()).path,
         "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
 
@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
         androidCropBlackWhiteTitle: 'Black White',
         androidCropReset: 'Reset',
       );
+      print("success: $success");
     } catch (e) {
       print(e);
     }
@@ -63,17 +64,15 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-
   Future<void> getImageFromGallery() async {
-// Generate filepath for saving
+    // Generate filepath for saving
     String imagePath = join((await getApplicationSupportDirectory()).path,
         "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
 
-    print("$imagePath : _imagePath");
-
     try {
       //Make sure to await the call to detectEdgeFromGallery.
-      bool success = await EdgeDetection.detectEdgeFromGallery(imagePath,
+      bool success = await EdgeDetection.detectEdgeFromGallery(
+        imagePath,
         androidCropTitle: 'Crop', // use custom localizations for android
         androidCropBlackWhiteTitle: 'Black White',
         androidCropReset: 'Reset',
