@@ -31,7 +31,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  edge_detection: 6f1248c3ee686fe7b2fd94c4b59ab8d695dd1e45
+  edge_detection: b4fb239b018cefa79515a024d0bf3e559336de4e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
   permission_handler_apple: 8f116445eff3c0e7c65ad60f5fef5490aa94b4e4
