@@ -42,14 +42,14 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
     private var methodCall: MethodCall? = null
 
     companion object {
-        public const val INITIAL_BUNDLE = "initial_bundle"
-        public const val FROM_GALLERY = "from_gallery"
-        public const val SAVE_TO = "save_to"
-        public const val CAN_USE_GALLERY = "can_use_gallery"
-        public const val SCAN_TITLE = "scan_title"
-        public const val CROP_TITLE = "crop_title"
-        public const val CROP_BLACK_WHITE_TITLE = "crop_black_white_title"
-        public const val CROP_RESET_TITLE = "crop_reset_title"
+        const val INITIAL_BUNDLE = "initial_bundle"
+        const val FROM_GALLERY = "from_gallery"
+        const val SAVE_TO = "save_to"
+        const val CAN_USE_GALLERY = "can_use_gallery"
+        const val SCAN_TITLE = "scan_title"
+        const val CROP_TITLE = "crop_title"
+        const val CROP_BLACK_WHITE_TITLE = "crop_black_white_title"
+        const val CROP_RESET_TITLE = "crop_reset_title"
     }
 
     fun setActivityPluginBinding(activityPluginBinding: ActivityPluginBinding) {
@@ -85,12 +85,16 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                finishWithSuccess(true)
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                finishWithSuccess(false)
-            }else if (resultCode == 400) {
-                finishWithError("400", data?.getStringExtra("RESULT") ?: "ERROR")
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    finishWithSuccess(true)
+                }
+                Activity.RESULT_CANCELED -> {
+                    finishWithSuccess(false)
+                }
+                ERROR_CODE -> {
+                    finishWithError(ERROR_CODE.toString(), data?.getStringExtra("RESULT") ?: "ERROR")
+                }
             }
             return true
         }
@@ -103,19 +107,18 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             return
         }
 
-        val initialIntent =
-            Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
-        val bundle = Bundle();
+        val initialIntent =Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+
+        val bundle = Bundle()
         bundle.putString(SAVE_TO, call.argument<String>(SAVE_TO) as String)
         bundle.putString(SCAN_TITLE, call.argument<String>(SCAN_TITLE) as String)
         bundle.putString(CROP_TITLE, call.argument<String>(CROP_TITLE) as String)
-        bundle.putString(
-            CROP_BLACK_WHITE_TITLE,
-            call.argument<String>(CROP_BLACK_WHITE_TITLE) as String
-        )
+        bundle.putString(CROP_BLACK_WHITE_TITLE, call.argument<String>(CROP_BLACK_WHITE_TITLE) as String)
         bundle.putString(CROP_RESET_TITLE, call.argument<String>(CROP_RESET_TITLE) as String)
         bundle.putBoolean(CAN_USE_GALLERY, call.argument<Boolean>(CAN_USE_GALLERY) as Boolean)
+
         initialIntent.putExtra(INITIAL_BUNDLE, bundle)
+
         getActivity()?.startActivityForResult(initialIntent, REQUEST_CODE)
     }
 
@@ -124,18 +127,17 @@ class EdgeDetectionHandler : MethodCallHandler, PluginRegistry.ActivityResultLis
             finishWithAlreadyActiveError()
             return
         }
-        val initialIntent =
-            Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
-        val bundle = Bundle();
+        val initialIntent = Intent(Intent(getActivity()?.applicationContext, ScanActivity::class.java))
+
+        val bundle = Bundle()
         bundle.putString(SAVE_TO, call.argument<String>(SAVE_TO) as String)
         bundle.putString(CROP_TITLE, call.argument<String>(CROP_TITLE) as String)
-        bundle.putString(
-            CROP_BLACK_WHITE_TITLE,
-            call.argument<String>(CROP_BLACK_WHITE_TITLE) as String
-        )
+        bundle.putString(CROP_BLACK_WHITE_TITLE, call.argument<String>(CROP_BLACK_WHITE_TITLE) as String )
         bundle.putString(CROP_RESET_TITLE, call.argument<String>(CROP_RESET_TITLE) as String)
         bundle.putBoolean(FROM_GALLERY, call.argument<Boolean>(FROM_GALLERY) as Boolean)
+
         initialIntent.putExtra(INITIAL_BUNDLE, bundle)
+
         getActivity()?.startActivityForResult(initialIntent, REQUEST_CODE)
     }
 

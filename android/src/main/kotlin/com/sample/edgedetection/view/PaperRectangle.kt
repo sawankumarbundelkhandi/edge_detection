@@ -105,8 +105,8 @@ class PaperRectangle : View {
         tr = corners?.corners?.get(1) ?: Point(size.width * 0.9, size.height * 0.1)
         br = corners?.corners?.get(2) ?: Point(size.width * 0.9, size.height * 0.9)
         bl = corners?.corners?.get(3) ?: Point(size.width * 0.1, size.height * 0.9)
-        ratioX = size?.width?.div(paperWidth) ?: 1.0
-        ratioY = size?.height?.div(paperHeight) ?: 1.0
+        ratioX = size.width?.div(paperWidth) ?: 1.0
+        ratioY = size.height?.div(paperHeight) ?: 1.0
         resize()
         movePoints()
     }

@@ -12,6 +12,7 @@ import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.exifinterface.media.ExifInterface
+import com.sample.edgedetection.ERROR_CODE
 import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.REQUEST_CODE
@@ -27,12 +28,12 @@ import java.io.*
 
 class ScanActivity : BaseActivity(), IScanView.Proxy {
 
-    private lateinit var mPresenter: ScanPresenter;
+    private lateinit var mPresenter: ScanPresenter
 
     override fun provideContentViewId(): Int = R.layout.activity_scan
 
     override fun initPresenter() {
-        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle
         mPresenter = ScanPresenter(this, this, initialBundle)
     }
 
@@ -52,14 +53,14 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         findViewById<View>(R.id.flash).visibility = if
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q && baseContext.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
             View.VISIBLE else
-                View.GONE;
-        
+                View.GONE
+
         findViewById<View>(R.id.flash).setOnClickListener {
-            mPresenter.toggleFlash();
+            mPresenter.toggleFlash()
         }
 
-        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
-        
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle
+
         if(!initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY)){
             this.title = initialBundle.getString(EdgeDetectionHandler.SCAN_TITLE, "") as String
         }
@@ -67,11 +68,11 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         findViewById<View>(R.id.gallery).visibility =
                 if (initialBundle.getBoolean(EdgeDetectionHandler.CAN_USE_GALLERY, true))
                     View.VISIBLE
-                else View.GONE;
+                else View.GONE
 
         findViewById<View>(R.id.gallery).setOnClickListener {
             pickupFromGallery()
-        };
+        }
 
         if (initialBundle.containsKey(EdgeDetectionHandler.FROM_GALLERY) && initialBundle.getBoolean(EdgeDetectionHandler.FROM_GALLERY,false))
         {
@@ -79,16 +80,11 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
     }
 
-    fun pickupFromGallery() {
+    private fun pickupFromGallery() {
         mPresenter.stop()
-        val gallery = Intent(
-                Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply{
-            type="image/*"
-        }
-        ActivityCompat.startActivityForResult(this, gallery, 1, null);
+        val gallery = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply{type="image/*"}
+        ActivityCompat.startActivityForResult(this, gallery, 1, null)
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -105,7 +101,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
     }
 
     override fun getCurrentDisplay(): Display? {
-        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             this.display
         } else {
             this.windowManager.defaultDisplay
@@ -142,14 +138,12 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        android.R.id.home -> {
             onBackPressed()
-            return true
+            true
         }
-
-        return super.onOptionsItemSelected(item)
+        else -> super.onOptionsItemSelected(item)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -157,7 +151,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         try {
             val iStream: InputStream = contentResolver.openInputStream(imageUri)!!
 
-            val exif = ExifInterface(iStream);
+            val exif = ExifInterface(iStream)
             var rotation = -1
             val orientation: Int = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
@@ -169,8 +163,8 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 ExifInterface.ORIENTATION_ROTATE_270 -> rotation = Core.ROTATE_90_COUNTERCLOCKWISE
             }
             val mimeType = contentResolver.getType(imageUri)
-            var imageWidth = 0.0
-            var imageHeight = 0.0
+            var imageWidth: Double
+            var imageHeight: Double
 
             if (mimeType?.startsWith("image/png") == true) {
                 val source = ImageDecoder.createSource(contentResolver, imageUri)
@@ -199,11 +193,11 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             if (rotation > -1) Core.rotate(pic, pic, rotation)
             mat.release()
 
-            mPresenter.detectEdge(pic);
+            mPresenter.detectEdge(pic)
         } catch (error: Exception) {
             val intent = Intent()
             intent.putExtra("RESULT", error.toString())
-            setResult(400, intent)
+            setResult(ERROR_CODE, intent)
             finish()
         }
 
@@ -214,7 +208,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         val byteBuffer = ByteArrayOutputStream()
         val bufferSize = 1024
         val buffer = ByteArray(bufferSize)
-        var len = 0
+        var len: Int
         while (inputStream.read(buffer).also { len = it } != -1) {
             byteBuffer.write(buffer, 0, len)
         }

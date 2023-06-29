@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.sample.edgedetection.R
 
@@ -21,7 +20,7 @@ abstract class BaseActivity : AppCompatActivity() {
         prepare()
     }
 
-    fun transparentStatusBar(
+    private fun transparentStatusBar(
         statusBarColor: Int = resources.getColor(R.color.colorPrimary)
     ) {
         var systemUiVisibility = 0
@@ -49,10 +48,6 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
         window.attributes = winParams
-    }
-
-    fun showMessage(id: Int) {
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show()
     }
 
     abstract fun provideContentViewId(): Int

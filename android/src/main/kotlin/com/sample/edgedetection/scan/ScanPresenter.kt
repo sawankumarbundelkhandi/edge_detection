@@ -57,7 +57,7 @@ class ScanPresenter constructor(
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
     private var mCameraLensFacing: String? = null
-    private var flashEnabled: Boolean = false;
+    private var flashEnabled: Boolean = false
 
     private var mLastClickTime = 0L
     private var shutted: Boolean = true
@@ -107,18 +107,18 @@ class ScanPresenter constructor(
 
     fun toggleFlash() {
         try {
-            flashEnabled = !flashEnabled;
-            val parameters = mCamera?.parameters;
+            flashEnabled = !flashEnabled
+            val parameters = mCamera?.parameters
             parameters?.flashMode =
                 if (flashEnabled) Camera.Parameters.FLASH_MODE_TORCH else Camera.Parameters.FLASH_MODE_OFF
-            mCamera?.setParameters(parameters);
-            mCamera?.startPreview();
+            mCamera?.parameters = parameters
+            mCamera?.startPreview()
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
     }
 
-    fun updateCamera() {
+    private fun updateCamera() {
         if (null == mCamera) {
             return
         }
@@ -135,7 +135,7 @@ class ScanPresenter constructor(
 
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    private fun getCameraCharacteristics(id: String): CameraCharacteristics? {
+    private fun getCameraCharacteristics(id: String): CameraCharacteristics {
         return cameraManager.getCameraCharacteristics(id)
     }
 
@@ -151,7 +151,7 @@ class ScanPresenter constructor(
         return mCameraLensFacing
     }
 
-    fun initCamera() {
+    private fun initCamera() {
 
         try {
             mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
@@ -227,9 +227,9 @@ class ScanPresenter constructor(
         Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
         SourceManager.pic = pic
 
-        val cropIntent = Intent(context, CropActivity::class.java);
+        val cropIntent = Intent(context, CropActivity::class.java)
         cropIntent.putExtra(EdgeDetectionHandler.INITIAL_BUNDLE, this.initialBundle)
-        (context as Activity)?.startActivityForResult(cropIntent, REQUEST_CODE);
+        (context as Activity).startActivityForResult(cropIntent, REQUEST_CODE)
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
@@ -266,8 +266,8 @@ class ScanPresenter constructor(
                 val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
                 Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
                 mat.release()
-                detectEdge(pic);
-                shutted = true;
+                detectEdge(pic)
+                shutted = true
                 busy = false
             }
     }
