@@ -1,5 +1,4 @@
 package com.sample.edgedetection.scan
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -31,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.opencv.android.Utils
 import org.opencv.core.Core
+import org.opencv.core.Core.ROTATE_90_CLOCKWISE
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Size
@@ -57,7 +57,7 @@ class ScanPresenter constructor(
     private val proxySchedule: Scheduler
     private var busy: Boolean = false
     private var mCameraLensFacing: String? = null
-    private var flashEnabled: Boolean = false;
+    private var flashEnabled: Boolean = false
 
     private var mLastClickTime = 0L
     private var shutted: Boolean = true
@@ -77,11 +77,13 @@ class ScanPresenter constructor(
     }
 
     fun start() {
-        mCamera?.startPreview() ?: Log.i(TAG, "camera null")
+        mCamera?.startPreview() ?:
+        Log.i(TAG, "mCamera startPreview")
     }
 
     fun stop() {
-        mCamera?.stopPreview() ?: Log.i(TAG, "camera null")
+        mCamera?.stopPreview() ?:
+        Log.i(TAG, "mCamera stopPreview")
     }
 
     val canShut: Boolean get() = shutted
@@ -105,18 +107,18 @@ class ScanPresenter constructor(
 
     fun toggleFlash() {
         try {
-            flashEnabled = !flashEnabled;
-            val parameters = mCamera?.parameters;
+            flashEnabled = !flashEnabled
+            val parameters = mCamera?.parameters
             parameters?.flashMode =
                 if (flashEnabled) Camera.Parameters.FLASH_MODE_TORCH else Camera.Parameters.FLASH_MODE_OFF
-            mCamera?.setParameters(parameters);
-            mCamera?.startPreview();
+            mCamera?.parameters = parameters
+            mCamera?.startPreview()
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
     }
 
-    fun updateCamera() {
+    private fun updateCamera() {
         if (null == mCamera) {
             return
         }
@@ -133,7 +135,7 @@ class ScanPresenter constructor(
 
     private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    private fun getCameraCharacteristics(id: String): CameraCharacteristics? {
+    private fun getCameraCharacteristics(id: String): CameraCharacteristics {
         return cameraManager.getCameraCharacteristics(id)
     }
 
@@ -149,7 +151,7 @@ class ScanPresenter constructor(
         return mCameraLensFacing
     }
 
-    fun initCamera() {
+    private fun initCamera() {
 
         try {
             mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
@@ -163,22 +165,16 @@ class ScanPresenter constructor(
         val cameraCharacteristics =
             cameraManager.getCameraCharacteristics(getBackFacingCameraId()!!)
 
-        val param = mCamera?.parameters
-        val availble_res = getOptimalResolution()
-
-        //val size = getMaxResolution()
-
         val size = iView.getCurrentDisplay()?.let {
             getPreviewOutputSize(
                 it, cameraCharacteristics, SurfaceHolder::class.java
             )
         }
-        // Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
-        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
-        // viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
+        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
 
         size?.width?.toString()?.let { Log.i(TAG, it) }
+        val param = mCamera?.parameters
         param?.setPreviewSize(size?.width ?: 1920, size?.height ?: 1080)
         val display = iView.getCurrentDisplay()
         val point = Point()
@@ -211,31 +207,53 @@ class ScanPresenter constructor(
             param?.setPictureSize(pictureSize.width, pictureSize.height)
         }
         val pm = context.packageManager
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            )
-        ) {
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+        {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
             Log.d(TAG, "enabling autofocus")
         } else {
             Log.d(TAG, "autofocus not available")
         }
+
         param?.flashMode = Camera.Parameters.FLASH_MODE_OFF
 
         mCamera?.parameters = param
         mCamera?.setDisplayOrientation(90)
         mCamera?.enableShutterSound(false)
-
     }
 
+    private fun matrixResizer(sourceMatrix: Mat): Mat {
+        val sourceSize: Size = sourceMatrix.size()
+        var copied = Mat()
+        if (sourceSize.height < sourceSize.width) {
+            Core.rotate(sourceMatrix, copied, ROTATE_90_CLOCKWISE)
+        } else {
+            copied = sourceMatrix
+        }
+        val copiedSize: Size = copied.size()
+        return if (copiedSize.width > ScanConstants.MAX_SIZE.width || copiedSize.height > ScanConstants.MAX_SIZE.height) {
+            var useRatio = 0.0
+            val widthRatio: Double = ScanConstants.MAX_SIZE.width / copiedSize.width
+            val heightRatio: Double = ScanConstants.MAX_SIZE.height / copiedSize.height
+            useRatio = if(widthRatio > heightRatio)  widthRatio else heightRatio
+            val resizedImage = Mat()
+            val newSize = Size(copiedSize.width * useRatio, copiedSize.height * useRatio)
+            Imgproc.resize(copied, resizedImage, newSize)
+            resizedImage
+        } else {
+            copied
+        }
+    }
     fun detectEdge(pic: Mat) {
-        SourceManager.corners = processPicture(pic)
-        Imgproc.cvtColor(pic, pic, Imgproc.COLOR_RGB2BGRA)
-        SourceManager.pic = pic
-
-        val cropIntent = Intent(context, CropActivity::class.java);
+        Log.i("height", pic.size().height.toString())
+        Log.i("width", pic.size().width.toString())
+        val resizedMat = matrixResizer(pic)
+        SourceManager.corners = processPicture(resizedMat)
+        Imgproc.cvtColor(resizedMat, resizedMat, Imgproc.COLOR_RGB2BGRA)
+        SourceManager.pic = resizedMat
+        val cropIntent = Intent(context, CropActivity::class.java)
         cropIntent.putExtra(EdgeDetectionHandler.INITIAL_BUNDLE, this.initialBundle)
-        (context as Activity)?.startActivityForResult(cropIntent, REQUEST_CODE);
+        (context as Activity).startActivityForResult(cropIntent, REQUEST_CODE)
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
@@ -272,8 +290,8 @@ class ScanPresenter constructor(
                 val pic = Imgcodecs.imdecode(mat, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED)
                 Core.rotate(pic, pic, Core.ROTATE_90_CLOCKWISE)
                 mat.release()
-                detectEdge(pic);
-                shutted = true;
+                detectEdge(pic)
+                shutted = true
                 busy = false
             }
     }
@@ -282,14 +300,12 @@ class ScanPresenter constructor(
         if (busy) {
             return
         }
-        Log.i(TAG, "on process start")
         busy = true
         try {
             Observable.just(p0)
                 .observeOn(proxySchedule)
                 .doOnError {}
                 .subscribe({
-                    Log.i(TAG, "start prepare paper")
                     val parameters = p1?.parameters
                     val width = parameters?.previewSize?.width
                     val height = parameters?.previewSize?.height
@@ -388,18 +404,4 @@ class ScanPresenter constructor(
         // Then, get the largest output size that is smaller or equal than our max size
         return validSizes.first { it.long <= maxSize.long && it.short <= maxSize.short }.size
     }
-
-    private fun getOptimalResolution(): Camera.Size? {
-
-
-        val resolutions = mCamera?.parameters?.supportedPreviewSizes
-        if (resolutions != null) {
-            for (item in resolutions) {
-                println("${item.width}, ${item.height}")
-            }
-        }
-        return null
-
-    }
-
 }

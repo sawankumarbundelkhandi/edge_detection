@@ -11,9 +11,6 @@ import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
-//import kotlinx.android.synthetic.main.activity_crop.*
-
-
 
 class CropActivity : BaseActivity(), ICropView.Proxy {
 
@@ -21,17 +18,17 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
     private lateinit var mPresenter: CropPresenter
 
-    private lateinit var initialBundle: Bundle;
+    private lateinit var initialBundle: Bundle
 
     override fun prepare() {
-        this.initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
+        this.initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle
         this.title = initialBundle.getString(EdgeDetectionHandler.CROP_TITLE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         findViewById<View>(R.id.paper).post {
-            //we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
+            // we have to initialize everything in post when the view has been drawn and we have the actual height and width of the whole view
             mPresenter.onViewsReady(findViewById<View>(R.id.paper).width, findViewById<View>(R.id.paper).height)
         }
     }
@@ -40,8 +37,8 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
 
     override fun initPresenter() {
-        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle;
-        mPresenter = CropPresenter(this, this, initialBundle)
+        val initialBundle = intent.getBundleExtra(EdgeDetectionHandler.INITIAL_BUNDLE) as Bundle
+        mPresenter = CropPresenter(this, initialBundle)
         findViewById<ImageView>(R.id.crop).setOnClickListener {
             Log.e(TAG, "Crop touched!")
             mPresenter.crop()
@@ -86,36 +83,36 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
 
     // handle button activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.action_label -> {
+                Log.e(TAG, "Saved touched!")
+                item.isEnabled = false
+                mPresenter.save()
+                setResult(Activity.RESULT_OK)
+                System.gc()
+                finish()
+                return true
+            }
+            R.id.rotation_image -> {
+                Log.e(TAG, "Rotate touched!")
+                mPresenter.rotate()
+                return true
+            }
+            R.id.gray -> {
+                Log.e(TAG, "Black White touched!")
+                mPresenter.enhance()
+                return true
+            }
+            R.id.reset -> {
+                Log.e(TAG, "Reset touched!")
+                mPresenter.reset()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
-
-        if (item.itemId == R.id.action_label) {
-            Log.e(TAG, "Saved touched!")
-            // Bug fix: prevent clicking more than one time
-            item.setEnabled(false)
-            //
-            mPresenter.save()
-            setResult(Activity.RESULT_OK)
-            System.gc()
-            finish()
-            return true
-        } else if (item.itemId == R.id.rotation_image) {
-            Log.e(TAG, "Rotate touched!")
-            mPresenter.rotate()
-            return true
-        } else if (item.itemId == R.id.gray) {
-            Log.e(TAG, "Black White touched!")
-            mPresenter.enhance()
-            return true
-        } else if (item.itemId == R.id.reset) {
-            Log.e(TAG, "Reset touched!")
-            mPresenter.reset()
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 }

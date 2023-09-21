@@ -1,6 +1,5 @@
 package com.sample.edgedetection.crop
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
@@ -20,11 +19,7 @@ import org.opencv.core.Mat
 import java.io.File
 import java.io.FileOutputStream
 
-
-const val IMAGES_DIR = "smart_scanner"
-
 class CropPresenter(
-    private val context: Context,
     private val iCropView: ICropView.Proxy,
     private val initialBundle: Bundle
 ) {
@@ -112,9 +107,6 @@ class CropPresenter(
             Log.i(TAG, "picture null?")
             return
         }
-
-        //croppedBitmap = croppedBitmap?.rotateInt(rotateBitmapDegree)
-
         rotateBitmap = croppedBitmap
         enhancedPicture = croppedBitmap
 
@@ -137,11 +129,9 @@ class CropPresenter(
             rotateBitmap = croppedBitmap
         }
 
-        Log.i(TAG, "ROTATEBITMAPDEGREE --> $rotateBitmapDegree")
+        Log.i(TAG, "ROTATE BITMAP DEGREE --> $rotateBitmapDegree")
 
         rotateBitmap = rotateBitmap?.rotateInt(rotateBitmapDegree)
-
-        //rotateBitmap = rotateBitmap?.rotateFloat(rotateBitmapDegree.toFloat())
 
         iCropView.getCroppedPaper().setImageBitmap(rotateBitmap)
 
@@ -150,7 +140,7 @@ class CropPresenter(
     }
 
     fun save() {
-        val file = File(initialBundle.getString(EdgeDetectionHandler.SAVE_TO) as String);
+        val file = File(initialBundle.getString(EdgeDetectionHandler.SAVE_TO) as String)
 
         val rotatePic = rotateBitmap
         if (null != rotatePic) {
@@ -161,7 +151,7 @@ class CropPresenter(
             rotatePic.recycle()
             Log.i(TAG, "RotateBitmap Saved")
         } else {
-            //first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
+            // first save enhanced picture, if picture is not enhanced, save cropped picture, otherwise nothing to do
             val pic = enhancedPicture
 
             if (null != pic) {
@@ -183,11 +173,6 @@ class CropPresenter(
                 }
             }
         }
-    }
-
-    fun Bitmap.rotateFloat(degrees: Float): Bitmap {
-        val matrix = Matrix().apply { postRotate(degrees) }
-        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 
     // Extension function to rotate a bitmap
