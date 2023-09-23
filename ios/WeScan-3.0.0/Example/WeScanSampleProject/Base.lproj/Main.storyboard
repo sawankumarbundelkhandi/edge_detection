@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HomeViewController" customModule="WeScanSampleProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="141" y="125"/>
+        </scene>
+        <!--New Camera View Controller-->
+        <scene sceneID="ygh-Ca-Ra7">
+            <objects>
+                <viewController id="1zm-gj-4hn" customClass="NewCameraViewController" customModule="WeScanSampleProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Hke-o0-5wQ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YcL-Ck-Kaf">
+                                <rect key="frame" x="32" y="273" width="350" height="350"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="350" id="0jg-cj-wiu"/>
+                                    <constraint firstAttribute="width" constant="350" id="rQl-bD-AUa"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YbL-Hk-8Tq">
+                                <rect key="frame" x="345" y="235" width="37" height="30"/>
+                                <state key="normal" title="Flash"/>
+                                <connections>
+                                    <action selector="flashTapped:" destination="1zm-gj-4hn" eventType="touchUpInside" id="uo5-Xd-pXI"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aYQ-YN-7Jr">
+                                <rect key="frame" x="179.5" y="647" width="55" height="30"/>
+                                <state key="normal" title="Capture"/>
+                                <connections>
+                                    <action selector="captureTapped:" destination="1zm-gj-4hn" eventType="touchUpInside" id="fFD-sa-yJx"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="YcL-Ck-Kaf" firstAttribute="centerY" secondItem="Hke-o0-5wQ" secondAttribute="centerY" id="HcC-KV-S7s"/>
+                            <constraint firstItem="YcL-Ck-Kaf" firstAttribute="top" secondItem="YbL-Hk-8Tq" secondAttribute="bottom" constant="8" id="Qvc-Sb-cII"/>
+                            <constraint firstItem="YbL-Hk-8Tq" firstAttribute="leading" secondItem="YcL-Ck-Kaf" secondAttribute="trailing" constant="-37" id="Ufd-44-VuT"/>
+                            <constraint firstItem="YcL-Ck-Kaf" firstAttribute="centerX" secondItem="Hke-o0-5wQ" secondAttribute="centerX" id="YcB-aL-AFe"/>
+                            <constraint firstItem="aYQ-YN-7Jr" firstAttribute="top" secondItem="YcL-Ck-Kaf" secondAttribute="bottom" constant="24" id="ezB-Kb-BRY"/>
+                            <constraint firstItem="aYQ-YN-7Jr" firstAttribute="centerX" secondItem="YcL-Ck-Kaf" secondAttribute="centerX" id="kmQ-WQ-9JI"/>
+                            <constraint firstItem="YbL-Hk-8Tq" firstAttribute="trailing" secondItem="YcL-Ck-Kaf" secondAttribute="trailing" id="n2c-xU-8s1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="STG-dD-fad"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="iPK-pm-c1V"/>
+                    <connections>
+                        <outlet property="cameraView" destination="YcL-Ck-Kaf" id="Aer-OT-ELT"/>
+                        <segue destination="tpA-bO-XWN" kind="show" identifier="showEditImageView" id="bIi-Xq-1Gr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mAm-QY-oXB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="957" y="850"/>
+        </scene>
+        <!--Edit Image View Controller-->
+        <scene sceneID="v7h-aM-DS4">
+            <objects>
+                <viewController storyboardIdentifier="NewEditImageView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="tpA-bO-XWN" customClass="EditImageViewController" customModule="WeScanSampleProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7M6-vz-otb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Oa-12-mc5">
+                                <rect key="frame" x="32" y="198" width="350" height="500"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="500" id="3WY-Wp-u3h"/>
+                                    <constraint firstAttribute="width" constant="350" id="zHs-oF-F0C"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="95t-Li-oZf">
+                                <rect key="frame" x="302" y="160" width="80" height="30"/>
+                                <state key="normal" title="Crop Image"/>
+                                <connections>
+                                    <action selector="cropTapped:" destination="tpA-bO-XWN" eventType="touchUpInside" id="Nln-f2-c1r"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="0Oa-12-mc5" firstAttribute="top" secondItem="95t-Li-oZf" secondAttribute="bottom" constant="8" id="ICZ-Ug-Gsb"/>
+                            <constraint firstItem="0Oa-12-mc5" firstAttribute="centerY" secondItem="7M6-vz-otb" secondAttribute="centerY" id="KQK-fV-Jws"/>
+                            <constraint firstItem="95t-Li-oZf" firstAttribute="leading" secondItem="0Oa-12-mc5" secondAttribute="trailing" constant="-80" id="bGT-yq-8tT"/>
+                            <constraint firstItem="0Oa-12-mc5" firstAttribute="centerX" secondItem="7M6-vz-otb" secondAttribute="centerX" id="e6L-fx-Zk6"/>
+                            <constraint firstItem="95t-Li-oZf" firstAttribute="trailing" secondItem="0Oa-12-mc5" secondAttribute="trailing" id="tgi-L6-9lI"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="r2y-wF-QPP"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Z3L-TC-hac"/>
+                    <connections>
+                        <outlet property="editImageView" destination="0Oa-12-mc5" id="ghQ-ac-ZxL"/>
+                        <segue destination="Z8s-gl-yPH" kind="show" identifier="showReviewImageSegue" id="SzC-8o-wyg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hYq-kP-b44" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1828" y="850"/>
+        </scene>
+        <!--Review Image View Controller-->
+        <scene sceneID="dW5-i7-bIL">
+            <objects>
+                <viewController storyboardIdentifier="ReviewImageView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Z8s-gl-yPH" customClass="ReviewImageViewController" customModule="WeScanSampleProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jxz-1T-kQ6">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="diY-L5-WCu">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="jQX-lm-My3" firstAttribute="bottom" secondItem="diY-L5-WCu" secondAttribute="bottom" id="2TM-fr-wql"/>
+                            <constraint firstItem="jQX-lm-My3" firstAttribute="trailing" secondItem="diY-L5-WCu" secondAttribute="trailing" id="3yz-Nn-1GL"/>
+                            <constraint firstItem="diY-L5-WCu" firstAttribute="leading" secondItem="jQX-lm-My3" secondAttribute="leading" id="eGF-xR-zul"/>
+                            <constraint firstItem="diY-L5-WCu" firstAttribute="top" secondItem="jQX-lm-My3" secondAttribute="top" id="otL-TF-4Nf"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="jQX-lm-My3"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6KC-nn-gao"/>
+                    <connections>
+                        <outlet property="imageView" destination="diY-L5-WCu" id="gbx-p4-ah6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DJf-01-xm5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2681" y="850"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Pme-bK-KWt">
+            <objects>
+                <navigationController storyboardIdentifier="NewCameraViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qcA-b3-rTX" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NPD-AY-tuI">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="1zm-gj-4hn" kind="relationship" relationship="rootViewController" id="jf9-To-vpo"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5KS-uN-I8H" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="Wzl-dG-SyX">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <viewLayoutGuide key="safeArea" id="Rvg-d4-sIG"/>
+                </view>
+            </objects>
+            <point key="canvasLocation" x="141" y="850"/>
+        </scene>
+    </scenes>
+</document>

@@ -1,0 +1,21 @@
+/* 
+    localizable.strings
+    WeScanSampleProject
+
+    Created by Ola Nilsson on 12/8/20.
+    Copyright © 2020 WeTransfer. All rights reserved.
+*/
+
+/* The "Next" button on the right side of the navigation bar on the Edit screen. */
+"wescan.edit.button.next" = "Nästa";
+
+/* The title on the navigation bar of the Edit screen. */
+"wescan.edit.title" = "Redigera";
+
+/* The title on the navigation bar of the Review screen. */
+"wescan.review.title" = "Granska";
+
+/* The button titles on the Scanning screen. */
+"wescan.scanning.cancel" = "Avbryt";
+"wescan.scanning.auto" = "Automatisk";
+"wescan.scanning.manual" = "Manuell";

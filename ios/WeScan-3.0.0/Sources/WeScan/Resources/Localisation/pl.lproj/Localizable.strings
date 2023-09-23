@@ -1,0 +1,21 @@
+/* 
+    localizable.strings
+    WeScanSampleProject
+
+    Created by Lukasz Szarkowicz on 06/03/2020.
+	Copyright © 2020 Lukasz Szarkowicz. All rights reserved.
+*/
+
+/* The "Next" button on the right side of the navigation bar on the Edit screen. */
+"wescan.edit.button.next" = "Dalej";
+
+/* The title on the navigation bar of the Edit screen. */
+"wescan.edit.title" = "Edytuj dokument";
+
+/* The title on the navigation bar of the Review screen. */
+"wescan.review.title" = "Podgląd";
+
+/* The button titles on the Scanning screen. */
+"wescan.scanning.cancel" = "Anuluj";
+"wescan.scanning.auto" = "Auto";
+"wescan.scanning.manual" = "Manualnie";
