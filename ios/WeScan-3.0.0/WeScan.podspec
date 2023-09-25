@@ -15,6 +15,6 @@ Pod::Spec.new do |spec|
 
   spec.swift_version = '5.0'
   spec.ios.deployment_target = '13.0'
-  spec.source_files = 'WeScan/**/*.{h,m,swift}'
-  spec.resources = 'WeScan/**/*.{strings,png}'
+  spec.source_files = 'Sources/WeScan/**/*.{h,m,swift}'
+  spec.resources = 'Sources/WeScan/**/*.{strings,png}'
 end
