@@ -31,8 +31,6 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
-  # pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-1.8.1'
-  # pod 'WeScan', :path => '../../ios/WeScan-1.8.1'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
