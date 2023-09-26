@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  WeScan
+
+  Created by Rénes Péter on 2019. 07. 08..
+  Copyright © 2019. WeTransfer. All rights reserved.
+*/
+
+/* The "Next" button on the right side of the navigation bar on the Edit screen. */
+"wescan.edit.button.next" = "Következő";
+
+/* The title on the navigation bar of the Edit screen. */
+"wescan.edit.title" = "Szerkesztés";
+
+/* The title on the navigation bar of the Review screen. */
+"wescan.review.title" = "Előnézet";
+
+/* The button titles on the Scanning screen. */
+"wescan.scanning.cancel" = "Mégsem";
+"wescan.scanning.auto" = "Auto";
+"wescan.scanning.manual" = "Kézi";

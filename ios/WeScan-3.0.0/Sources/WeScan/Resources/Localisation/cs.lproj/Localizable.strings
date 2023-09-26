@@ -1,0 +1,21 @@
+/* 
+    localizable.strings
+    WeScanSampleProject
+
+    Created by Martin Georgiu on 3/8/20.
+    Copyright © 2020 Martin Georgiu. All rights reserved.
+*/
+
+/* The "Next" button on the right side of the navigation bar on the Edit screen. */
+"wescan.edit.button.next" = "Pokračovat";
+
+/* The title on the navigation bar of the Edit screen. */
+"wescan.edit.title" = "Upravit";
+
+/* The title on the navigation bar of the Review screen. */
+"wescan.review.title" = "Náhled";
+
+/* The button titles on the Scanning screen. */
+"wescan.scanning.cancel" = "Zpět";
+"wescan.scanning.auto" = "Auto";
+"wescan.scanning.manual" = "Ručně";

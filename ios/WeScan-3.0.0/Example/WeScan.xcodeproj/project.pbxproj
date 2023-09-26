@@ -1,0 +1,438 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		383C440E23C5846B0070DE47 /* EditImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383C440D23C5846B0070DE47 /* EditImageViewController.swift */; };
+		383C441723C587B90070DE47 /* ReviewImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383C441623C587B90070DE47 /* ReviewImageViewController.swift */; };
+		388A3BF423C46DAE00263DD1 /* NewCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388A3BF323C46DAE00263DD1 /* NewCameraViewController.swift */; };
+		8432556F293A41A100E3CC20 /* WeScan in Frameworks */ = {isa = PBXBuildFile; productRef = 8432556E293A41A100E3CC20 /* WeScan */; };
+		A1D4BCBB202C4F3800FCDDEC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D4BCBA202C4F3800FCDDEC /* AppDelegate.swift */; };
+		A1D4BCBD202C4F3800FCDDEC /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D4BCBC202C4F3800FCDDEC /* HomeViewController.swift */; };
+		A1D4BCC0202C4F3800FCDDEC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1D4BCBE202C4F3800FCDDEC /* Main.storyboard */; };
+		A1D4BCC2202C4F3800FCDDEC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1D4BCC1202C4F3800FCDDEC /* Assets.xcassets */; };
+		A1D4BCC5202C4F3800FCDDEC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1D4BCC3202C4F3800FCDDEC /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1D4BD07202C4F4100FCDDEC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		383C440D23C5846B0070DE47 /* EditImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageViewController.swift; sourceTree = "<group>"; };
+		383C441623C587B90070DE47 /* ReviewImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewImageViewController.swift; sourceTree = "<group>"; };
+		388A3BF323C46DAE00263DD1 /* NewCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCameraViewController.swift; sourceTree = "<group>"; };
+		8432556D293A419500E3CC20 /* WeScan */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = WeScan; path = ..; sourceTree = "<group>"; };
+		A1D4BCB7202C4F3800FCDDEC /* WeScanSampleProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeScanSampleProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1D4BCBA202C4F3800FCDDEC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A1D4BCBC202C4F3800FCDDEC /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		A1D4BCC1202C4F3800FCDDEC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1D4BCC6202C4F3800FCDDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B97B49D4216C6FF600B2235B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B97B49D5216C6FF600B2235B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1D4BCB4202C4F3800FCDDEC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8432556F293A41A100E3CC20 /* WeScan in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		74E27857215446C900361812 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1D4BCAE202C4F3800FCDDEC = {
+			isa = PBXGroup;
+			children = (
+				8432556D293A419500E3CC20 /* WeScan */,
+				A1D4BCB9202C4F3800FCDDEC /* WeScanSampleProject */,
+				A1D4BCB8202C4F3800FCDDEC /* Products */,
+				74E27857215446C900361812 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A1D4BCB8202C4F3800FCDDEC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1D4BCB7202C4F3800FCDDEC /* WeScanSampleProject.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1D4BCB9202C4F3800FCDDEC /* WeScanSampleProject */ = {
+			isa = PBXGroup;
+			children = (
+				A1D4BCBA202C4F3800FCDDEC /* AppDelegate.swift */,
+				A1D4BCBC202C4F3800FCDDEC /* HomeViewController.swift */,
+				A1D4BCBE202C4F3800FCDDEC /* Main.storyboard */,
+				A1D4BCC1202C4F3800FCDDEC /* Assets.xcassets */,
+				A1D4BCC3202C4F3800FCDDEC /* LaunchScreen.storyboard */,
+				A1D4BCC6202C4F3800FCDDEC /* Info.plist */,
+				388A3BF323C46DAE00263DD1 /* NewCameraViewController.swift */,
+				383C440D23C5846B0070DE47 /* EditImageViewController.swift */,
+				383C441623C587B90070DE47 /* ReviewImageViewController.swift */,
+			);
+			path = WeScanSampleProject;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1D4BCB6202C4F3800FCDDEC /* WeScanSampleProject */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1D4BCDF202C4F3800FCDDEC /* Build configuration list for PBXNativeTarget "WeScanSampleProject" */;
+			buildPhases = (
+				A1D4BCB3202C4F3800FCDDEC /* Sources */,
+				A1D4BCB4202C4F3800FCDDEC /* Frameworks */,
+				A1D4BCB5202C4F3800FCDDEC /* Resources */,
+				503A25E422FB044C00534850 /* SwiftLint */,
+				A1D4BD07202C4F4100FCDDEC /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WeScanSampleProject;
+			packageProductDependencies = (
+				8432556E293A41A100E3CC20 /* WeScan */,
+			);
+			productName = ScannerSampleProject;
+			productReference = A1D4BCB7202C4F3800FCDDEC /* WeScanSampleProject.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1D4BCAF202C4F3800FCDDEC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 1230;
+				ORGANIZATIONNAME = WeTransfer;
+				TargetAttributes = {
+					A1D4BCB6202C4F3800FCDDEC = {
+						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = A1D4BCB2202C4F3800FCDDEC /* Build configuration list for PBXProject "WeScan" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				fr,
+				"pt-PT",
+				it,
+				"zh-Hans",
+				"zh-Hant",
+				de,
+				"pt-BR",
+				hu,
+				pl,
+				es,
+				"es-419",
+				tr,
+				ru,
+				cs,
+				ar,
+				sv,
+				ja,
+				nl,
+				ko,
+			);
+			mainGroup = A1D4BCAE202C4F3800FCDDEC;
+			productRefGroup = A1D4BCB8202C4F3800FCDDEC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1D4BCB6202C4F3800FCDDEC /* WeScanSampleProject */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1D4BCB5202C4F3800FCDDEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1D4BCC5202C4F3800FCDDEC /* LaunchScreen.storyboard in Resources */,
+				A1D4BCC2202C4F3800FCDDEC /* Assets.xcassets in Resources */,
+				A1D4BCC0202C4F3800FCDDEC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		503A25E422FB044C00534850 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -z \"$CI\" ]; then\n    if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n        if test -d \"/opt/homebrew/bin/\"; then\n            PATH=\"/opt/homebrew/bin/:${PATH}\"\n        fi\n\n        export PATH\n        swiftlint --config \"${SRCROOT}/../Submodules/WeTransfer-iOS-CI/BuildTools/.swiftlint.yml\"\n    else\n        echo \"Info: As we're not building for Debug, no SwiftLint is running.\"\n    fi\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1D4BCB3202C4F3800FCDDEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				383C440E23C5846B0070DE47 /* EditImageViewController.swift in Sources */,
+				383C441723C587B90070DE47 /* ReviewImageViewController.swift in Sources */,
+				A1D4BCBD202C4F3800FCDDEC /* HomeViewController.swift in Sources */,
+				388A3BF423C46DAE00263DD1 /* NewCameraViewController.swift in Sources */,
+				A1D4BCBB202C4F3800FCDDEC /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A1D4BCBE202C4F3800FCDDEC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B97B49D4216C6FF600B2235B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A1D4BCC3202C4F3800FCDDEC /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B97B49D5216C6FF600B2235B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A1D4BCDD202C4F3800FCDDEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1D4BCDE202C4F3800FCDDEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1D4BCE0202C4F3800FCDDEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = WeScanSampleProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.WeTransfer.WeScanSampleProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A1D4BCE1202C4F3800FCDDEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = WeScanSampleProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.WeTransfer.WeScanSampleProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1D4BCB2202C4F3800FCDDEC /* Build configuration list for PBXProject "WeScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1D4BCDD202C4F3800FCDDEC /* Debug */,
+				A1D4BCDE202C4F3800FCDDEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1D4BCDF202C4F3800FCDDEC /* Build configuration list for PBXNativeTarget "WeScanSampleProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1D4BCE0202C4F3800FCDDEC /* Debug */,
+				A1D4BCE1202C4F3800FCDDEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8432556E293A41A100E3CC20 /* WeScan */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeScan;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A1D4BCAF202C4F3800FCDDEC /* Project object */;
+}
