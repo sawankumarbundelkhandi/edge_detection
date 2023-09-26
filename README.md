@@ -29,6 +29,23 @@ post_install do |installer|
 end
 ```
 
+## Fix build on xCode 15
+
+Add this line to your Podfile in your project: 
+```
+pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
+```
+=> like this below:
+
+```
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+  pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+```
+
 Add below permission to the `ios/Runner/Info.plist`:
 
 - one with the key `Privacy - Camera Usage Description` and a usage description.
@@ -175,21 +192,3 @@ Using these native implementation
 <a>https://github.com/WeTransfer/WeScan</a>
 
 <a>https://github.com/KePeng1019/SmartPaperScan</a>
-
-
-# Fix build on xCode 15
-
-Add this line to your Podfile in your project: 
-```
-pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
-```
-=> like this below:
-
-```
-target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
-  pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-end
-```
