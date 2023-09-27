@@ -42,6 +42,9 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
             Log.i(TAG, "loading opencv error, exit")
             finish()
         }
+        else {
+            Log.i("OpenCV", "OpenCV loaded Successfully!");
+        }
 
         findViewById<View>(R.id.shut).setOnClickListener {
             if (mPresenter.canShut) {

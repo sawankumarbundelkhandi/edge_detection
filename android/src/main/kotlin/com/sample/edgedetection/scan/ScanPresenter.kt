@@ -171,7 +171,7 @@ class ScanPresenter constructor(
             )
         }
 
-        Log.d(TAG, "Selected preview size: ${size?.width}${size?.height}")
+        Log.i(TAG, "Selected preview size: ${size?.width}${size?.height}")
 
         size?.width?.toString()?.let { Log.i(TAG, it) }
         val param = mCamera?.parameters
@@ -210,9 +210,9 @@ class ScanPresenter constructor(
         if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS) && mCamera!!.parameters.supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
         {
             param?.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-            Log.d(TAG, "enabling autofocus")
+            Log.i(TAG, "enabling autofocus")
         } else {
-            Log.d(TAG, "autofocus not available")
+            Log.i(TAG, "autofocus not available")
         }
 
         param?.flashMode = Camera.Parameters.FLASH_MODE_OFF
