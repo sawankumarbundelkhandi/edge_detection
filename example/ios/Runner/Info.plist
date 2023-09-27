@@ -28,6 +28,10 @@
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera permission for edge detection.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs camera permission for edge detection.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs camera permission for edge detection.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
