@@ -31,7 +31,6 @@ class EdgeDetection {
         String androidCropBlackWhiteTitle: "Black White",
         String androidCropReset: "Reset",
       }) async {
-    print('aqui1:$saveTo');
     return await _channel.invokeMethod('edge_detect_gallery', {
       'save_to': saveTo,
       'crop_title': androidCropTitle,
