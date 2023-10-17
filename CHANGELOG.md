@@ -1,3 +1,11 @@
+## 1.1.3
+
+- Added fix for getting images from gallery (Thanks to @etrigan21 for the PR)
+- Fix for Stored properties cannot be marked unavailable with '@available' (Thanks to @giapnhgc for the PR)
+- Migrated to WeScan 3.0.0
+- Migrated to OpenCV 3.4.5 (using com.quickbirdstudios:opencv:3.4.5)
+- Fixed issues with example app
+
 ## 1.1.2
 
 - Bug Fix: NullPointerException for scanning title (Thanks to @AhmadHusein5853 for the PR)

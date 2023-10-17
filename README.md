@@ -31,10 +31,12 @@ end
 
 ## Fix build on xCode 15
 
-Add this line to your Podfile in your project: 
+Add this line to your Podfile in your project:
+
 ```
 pod 'WeScan', :path => '.symlinks/plugins/edge_detection/ios/WeScan-3.0.0'
 ```
+
 => like this below:
 
 ```
@@ -86,7 +88,7 @@ Please check the latest version before installation.
 dependencies:
   flutter:
     sdk: flutter
-  edge_detection: ^1.1.2
+  edge_detection: ^1.1.3
   permission_handler: ^10.0.0
   path_provider: ^2.0.11
   path: ^1.8.2
