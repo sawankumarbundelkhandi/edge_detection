@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     // Generate filepath for saving
     String imagePath = join((await getApplicationSupportDirectory()).path,
         "${(DateTime.now().millisecondsSinceEpoch / 1000).round()}.jpeg");
-      
+
     bool success = false;
 
     try {
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      if(success){
+      if (success) {
         _imagePath = imagePath;
       }
     });
@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      if(success){
+      if (success) {
         _imagePath = imagePath;
       }
     });
