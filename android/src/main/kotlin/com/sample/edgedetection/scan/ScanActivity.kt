@@ -131,7 +131,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 val uri: Uri = data!!.data!!
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     onImageSelected(uri)
                 }
             } else {
@@ -149,7 +149,7 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
         else -> super.onOptionsItemSelected(item)
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresApi(Build.VERSION_CODES.P)
     fun onImageSelected(imageUri: Uri) {
         try {
             val iStream: InputStream = contentResolver.openInputStream(imageUri)!!
