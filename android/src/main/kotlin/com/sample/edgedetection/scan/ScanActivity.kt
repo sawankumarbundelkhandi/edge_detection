@@ -134,7 +134,10 @@ class ScanActivity : BaseActivity(), IScanView.Proxy {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     onImageSelected(uri)
                 }
-            } else {
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                mPresenter.start()
+            }
+            else {
                 if (intent.hasExtra(EdgeDetectionHandler.FROM_GALLERY) && intent.getBooleanExtra(EdgeDetectionHandler.FROM_GALLERY,false))
                     finish()
             }
