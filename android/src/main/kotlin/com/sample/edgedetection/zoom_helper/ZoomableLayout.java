@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-public class ZoomContainer extends ViewGroup
+public class ZoomableLayout extends ViewGroup
 {
     /**
      * Limit the maximum/minimum scrolling to prevent scrolling the container,
