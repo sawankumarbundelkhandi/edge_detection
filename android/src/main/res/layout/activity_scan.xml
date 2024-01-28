@@ -5,17 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.sample.edgedetectoin.zoom_helper.ZoomContainer
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <SurfaceView
             android:id="@+id/surface"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.sample.edgedetectoin.zoom_helper.ZoomContainer>
-
+ 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
