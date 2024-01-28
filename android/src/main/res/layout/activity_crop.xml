@@ -4,17 +4,29 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.sample.edgedetectoin.zoom_helper.ZoomableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+          android:layout_centerInParent="true"
+        >
+        
     <ImageView
         android:id="@+id/picture_cropped"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+       />
+        </com.sample.edgedetectoin.zoom_helper.ZoomableLayout>
+
+        
 
     <!-- <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"> -->
 
+    <com.sample.edgedetectoin.zoom_helper.ZoomableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ImageView
         android:id="@+id/paper"
         android:layout_width="match_parent"
@@ -27,7 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorTransparent" />
-
+   </com.sample.edgedetectoin.zoom_helper.ZoomableLayout>
+    
     <!-- </RelativeLayout> -->
 
     <!--<TextView
