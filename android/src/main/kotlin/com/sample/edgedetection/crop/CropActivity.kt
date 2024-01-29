@@ -11,6 +11,7 @@ import com.sample.edgedetection.EdgeDetectionHandler
 import com.sample.edgedetection.R
 import com.sample.edgedetection.base.BaseActivity
 import com.sample.edgedetection.view.PaperRectangle
+import com.sample.edgedetection.view.ZoomableImageView
 
 class CropActivity : BaseActivity(), ICropView.Proxy {
 
@@ -46,7 +47,7 @@ class CropActivity : BaseActivity(), ICropView.Proxy {
         }
     }
 
-    override fun getPaper(): ImageView = findViewById(R.id.paper)
+    override fun getPaper(): ZoomableImageView = findViewById(R.id.paper)
 
     override fun getPaperRect() = findViewById<PaperRectangle>(R.id.paper_rect)
 
