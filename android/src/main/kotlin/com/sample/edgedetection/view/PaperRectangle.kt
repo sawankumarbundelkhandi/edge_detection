@@ -137,26 +137,50 @@ class PaperRectangle : View {
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (!cropMode) {
             return false
         }
-        when (event?.action) {
+
+        val touchX = event?.x ?: return false
+        val touchY = event.y
+
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                latestDownX = event.x
-                latestDownY = event.y
-                calculatePoint2Move(event.x, event.y)
+
+                if (isCornerTouched(touchX, touchY)) {
+                    latestDownX = touchX
+                    latestDownY = touchY
+                    calculatePoint2Move(touchX, touchY)
+                    return true
+                }
             }
             MotionEvent.ACTION_MOVE -> {
-                point2Move.x = (event.x - latestDownX) + point2Move.x
-                point2Move.y = (event.y - latestDownY) + point2Move.y
-                movePoints()
-                latestDownY = event.y
-                latestDownX = event.x
+                if (point2Move.x != 0.0 && point2Move.y != 0.0) {
+                    point2Move.x += (touchX - latestDownX)
+                    point2Move.y += (touchY - latestDownY)
+                    movePoints()
+                    latestDownX = touchX
+                    latestDownY = touchY
+                    return true
+                }
             }
         }
-        return true
+
+        return false
+    }
+
+    private fun isCornerTouched(touchX: Float, touchY: Float): Boolean {
+        val cornerRadius = 20F
+        val corners = listOf(tl, tr, br, bl)
+        for (corner in corners) {
+            val distance = Math.sqrt(Math.pow((touchX - corner.x), 2.0) + Math.pow((touchY - corner.y), 2.0))
+            if (distance <= cornerRadius) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun calculatePoint2Move(downX: Float, downY: Float) {
