@@ -27,7 +27,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 33
-
+    namespace 'com.sample.edgedetection'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -38,6 +38,10 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
