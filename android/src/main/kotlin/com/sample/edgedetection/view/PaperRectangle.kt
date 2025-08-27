@@ -116,26 +116,26 @@ class PaperRectangle : View {
         return listOf(tl, tr, br, bl)
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    override fun onDraw(canvas: Canvas) {  // Remove the ? - it should be non-nullable
+    super.onDraw(canvas)
+    
+    rectPaint.color = Color.WHITE
+    rectPaint.strokeWidth = 6F
+    rectPaint.style = Paint.Style.STROKE
+    canvas.drawPath(path, rectPaint)  // No need for ?. since canvas is non-null
 
-        rectPaint.color = Color.WHITE
-        rectPaint.strokeWidth = 6F
-        rectPaint.style = Paint.Style.STROKE
-        canvas?.drawPath(path, rectPaint)
+    rectPaint.color = Color.argb(128, 255, 255, 255)
+    rectPaint.strokeWidth = 0F
+    rectPaint.style = Paint.Style.FILL
+    canvas.drawPath(path, rectPaint)
 
-        rectPaint.color = Color.argb(128, 255, 255, 255)
-        rectPaint.strokeWidth = 0F
-        rectPaint.style = Paint.Style.FILL
-        canvas?.drawPath(path, rectPaint)
-
-        if (cropMode) {
-            canvas?.drawCircle(tl.x.toFloat(), tl.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(tr.x.toFloat(), tr.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(bl.x.toFloat(), bl.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(br.x.toFloat(), br.y.toFloat(), 20F, circlePaint)
-        }
+    if (cropMode) {
+        canvas.drawCircle(tl.x.toFloat(), tl.y.toFloat(), 20F, circlePaint)
+        canvas.drawCircle(tr.x.toFloat(), tr.y.toFloat(), 20F, circlePaint)
+        canvas.drawCircle(bl.x.toFloat(), bl.y.toFloat(), 20F, circlePaint)
+        canvas.drawCircle(br.x.toFloat(), br.y.toFloat(), 20F, circlePaint)
     }
+}
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
